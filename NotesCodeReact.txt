@@ -1,0 +1,29 @@
+- App.jsx : composant App qui le composant principal : celui qui sera affiché dans le navigateur
+
+- <SearchBar />
+
+Ici, on utilise le composant qu’on a importé.
+
+React sait que c’est un composant car la première lettre est en majuscule.
+
+C’est comme dire : « affiche ici tout ce que le composant SearchBar retourne ».
+
+Si tu passes des données avec des props, ça se ferait comme <SearchBar prop1={value} />.
+	
+- En React, props sont des données passées d’un composant parent à un composant enfant.
+
+Ici, MovieCard va recevoir un objet film (titre, image, éventuellement année, description…).
+
+Les props sont en lecture seule → MovieCard ne modifie pas directement les données, juste les affiche.
+
+- State = “données qui peuvent changer au fil du temps dans un composant”
+
+Le state va contenir les films récupérés depuis le backend
+
+- On crée une variable de state :
+
+const [movies, setMovies] = useState([]);
+
+movies → contient la liste des films (initialement vide [])
+
+setMovies → fonction pour mettre à jour cette liste

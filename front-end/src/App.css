@@ -1,42 +1,270 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* ----- Variables Globales ----- */
+
+/* Centralisation des couleurs pour faciliter le changement à un seul endroit */
+:root {
+  --primary-color: #6366f1; /* bleu canard */
+  --bg-dark: #0f172a; /* bleu nuit */
+  --card-bg: #1e293b; /* couleur des cartes plus clair que le bg */
+  --text-main: #f8fafc; /* blanc agréable à l'oeil */
+  --text-muted: #94a3b8; /* gris pour les textes */ 
+  --transition: all 0.3s ease; /* animation de 0.3s */
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* ----- Base ----- */ 
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main); 
+  margin: 0;
+  padding: 0;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* ----- Mise en page ----- */
+.page-principale {
+  padding-top: 70px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* 1 - Barre de navigation */
+.barnav {
+  display: flex; /* alignement horizontal */
+  justify-content: space-between; /* espace entre logo & profil */
+  align-items: center; /* éléments centrés verticalement */
+  padding: 0 5%; /* marge interne : haut&bas 20px, gauche&droite 5%*/
+  height: 70px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0,0,0,0.7) 100%); /* fond à moitié transparent */
+  backdrop-filter: blur(10px); /* effet flou */
+  position: fixed; /* ne bouge pas/reste en haut lorqu'on scroll */
+  top: 0; 
+  width: 100%;
+  z-index: 1000; /* passe au dessus de tout le reste */
+  box-sizing: border-box;
 }
 
-.card {
-  padding: 2em;
+.groupe-droite {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
-.read-the-docs {
-  color: #888;
+/* 2 - Barre de recherche */
+.zone-recherche {
+  display: none;
+}
+
+.conteneur-recherche {
+  position: relative;
+  display: flex;  
+  align-items: center;
+}
+
+/* Champ de saisie */
+.entree-recherche {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 8px 15px 8px 35px;
+  border-radius: 8px;
+  transition: all 0.3s;
+  width: 150px;
+}
+
+/* Lors du click sur la barre cad FOCUS */
+.entree-recherche:focus {
+  border-color: white;  /* la bordure brille */
+  background: black;  /* le fond devient noir */
+  width: 220px; /* allongement de la barre */
+  outline: none;   /* retirer tout contour */
+}
+
+.bouton-recherche {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: var(--transition);
+}
+
+/* Logo */
+.conteneur-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.img-logo {
+  height: 70px;
+  width: auto;
+  object-fit: contain;
+}
+
+.nom-site {
+  font-weight: 900;
+  font-size: 1.2rem;
+  letter-spacing: -1px;
+}
+
+h1 {
+  font-size: 5rem;
+  margin-bottom: 20px;
+  background: linear-gradient(to right, #ffffff, var(--primary-color));
+  -webkit-background-clip: text; /* affichage du fond seulement là où il y a du texte */
+  -webkit-text-fill-color: transparent;
+}
+
+/* 3 - Grille de Films (Mise en page Responsive) */
+.grille-films {
+  display: grid; /* rangement en grille */
+  /* repeat(auto-fill) génère automatiquement l'affichage (nb colonne) lors de zoom */
+  /* minmax(220px, 1fr) garantit que chaque carte fait min 220px de large */
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 30px; /* espace entre les éléments de la grille */
+  padding: 40px 5%;
+}
+
+/* 4 - Composants */
+/* MovieCard */
+.carte-film {
+  background-color: var(--card-bg);
+  width: 100%;
+  max-width: 100%;
+  border-radius: 8px; /* coins arrondis */
+  overflow: hidden; /* respect de la forme des cartes pour les images */
+  transition: var(--transition);
+  position: relative; /* position du bouton favori au dessus de l'image */
+  border: none ; /*1px solid rgba(255, 255, 255, 0.05);*/
+  display: flex;
+  flex-direction: column;
+}
+
+/* Animation au survol de la carte du film */
+.carte-film:hover {
+  transform: scale(1.1); /* effet d'élévatiion de l'affiche de film */
+  z-index: 10;
+  border-color: var(--primary-color);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* ombre portée (profondeur) */
+}
+
+.image-film {
+  width: 100%;
+  height: 320px;
+  object-fit: cover; /* évite l'écrasement de l'image */
+}
+
+.infos-film { /* le contenant du texte du film */
+  padding: 15px;
+}
+
+.infos-film h2 {  /* le texte du film */
+  font-size: 1.1rem;
+  margin: 0 0 5px 0;
+  white-space: nowrap; /* si titre trop long permet d'éviter de déformer les cartes */
+  overflow: hidden;
+  text-overflow: ellipsis; /* ajout des "..." si le titre est trop long */
+}
+
+/* 5 - Intéractions : boutons, états */
+.menu-navigation {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.onglet, .onglet-actif {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: var(--transition); 
+}
+
+.onglet {
+  background: transparent;
+  color: var(--text-muted);
+}
+
+/* Effet au survol pour les boutons inactifs */
+.onglet:hover {
+  background-color: var(--primary-color);
+  color: white;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); /* ombre pour faire ressortir l'onglet selectionné */
+}
+
+/* Bannière principale du haut du site */
+.ban-principale {
+  height: 80vh;
+  background-image: url('https://www.screentune.com/wp-content/uploads/2019/01/546680.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.voile-ban {
+  height: 100%;
+  background: linear-gradient(to top, var(--bg-dark) 0%, transparent 50%, rgba(0,0,0,0.5) 100%);
+  display: flex;
+  align-items: center;
+  padding: 0 5%;
+}
+
+.titre-ban {
+  font-size: 4rem;
+  font-weight: 900;
+  margin-bottom: 10px;
+  background: transparent;
+  -webkit-text-fill-color: white;
+}
+
+.bouton-play {
+  background-color: white;
+  color: black;
+  border: none;
+  padding: 10px 25px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background-color 0.2s;
+}
+
+.bouton-play:hover {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.bouton-info {
+  background-color: rgba(109, 109, 110, 0.7);
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  font-size: 1.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.bouton-ban {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* Bouton Favoris */ 
+.bouton-favoris {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
 }

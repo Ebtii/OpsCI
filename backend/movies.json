@@ -4,14 +4,14 @@
     "year": 2010,
     "director": "Christopher Nolan",
     "genre": "Sci-Fi",
-    "image_url": "/images/image_1.jpeg"
+    "image_url": "/images/inception.jpeg"
   },
   {
     "title": "Interstellar",
     "year": 2014,
     "director": "Christopher Nolan",
     "genre": "Sci-Fi",
-    "image_url": "/images/image_2.jpeg"
+    "image_url": "/images/interstellar.jpg"
   },
   {
     "title": "The Dark Knight",
@@ -50,7 +50,8 @@
     "title": "The Matrix",
     "year": 1999,
     "director": "Lana Wachowski, Lilly Wachowski",
-    "genre": "Sci-Fi"
+    "genre": "Sci-Fi",
+    "image_url": "/images/matrix.jpg"
   },
   {
     "title": "Fight Club",
@@ -98,13 +99,16 @@
     "title": "Parasite",
     "year": 2019,
     "director": "Bong Joon-ho",
-    "genre": "Thriller"
+    "genre": "Thriller",
+    "image_url": "/images/parasite.jpg"
+
   },
   {
     "title": "Spirited Away",
     "year": 2001,
     "director": "Hayao Miyazaki",
-    "genre": "Animation"
+    "genre": "Animation",
+    "image_url": "/images/spiritedaway.jpg"
   },
   {
     "title": "Princess Mononoke",
