@@ -78,7 +78,7 @@ body {
 .bouton-recherche {
   padding: 8px 16px;
   border: none;
-  border-radius: 20px;
+  border-radius: 8px;
   cursor: pointer;
   font-family: inherit;
   transition: var(--transition);
@@ -112,6 +112,34 @@ h1 {
   -webkit-text-fill-color: transparent;
 }
 
+/* Barre des genres de films */
+.barre-genres {
+  display: flex;
+  gap: 10px;
+  padding: 20px 5%;
+}
+
+.badge-genre {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.badge-genre:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+.badge-genre.actif {
+  background: #ffd60a;
+  color: black;
+  font-weight: bold;
+}
+
 /* 3 - Grille de Films (Mise en page Responsive) */
 .grille-films {
   display: grid; /* rangement en grille */
@@ -130,7 +158,7 @@ h1 {
   max-width: 100%;
   border-radius: 8px; /* coins arrondis */
   overflow: hidden; /* respect de la forme des cartes pour les images */
-  transition: var(--transition);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
   position: relative; /* position du bouton favori au dessus de l'image */
   border: none ; /*1px solid rgba(255, 255, 255, 0.05);*/
   display: flex;
@@ -142,7 +170,7 @@ h1 {
   transform: scale(1.1); /* effet d'élévatiion de l'affiche de film */
   z-index: 10;
   border-color: var(--primary-color);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* ombre portée (profondeur) */
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7); /* ombre portée (profondeur) */
 }
 
 .image-film {
@@ -173,7 +201,7 @@ h1 {
 .onglet, .onglet-actif {
   padding: 8px 16px;
   border: none;
-  border-radius: 20px;
+  border-radius: 8px;
   cursor: pointer;
   font-family: inherit;
   transition: var(--transition); 
@@ -267,4 +295,41 @@ h1 {
   justify-content: center;
   cursor: pointer;
   z-index: 10;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.bouton-favoris:hover {
+  transform: scale(1.2);
+}
+
+/* Catalogue */
+
+.entete-suggestion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5%;
+  margin-bottom: 5px;
+}
+
+.voir-tout {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 0.9rem;
+}
+
+.voir-tout:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+.voir-tout.actif {
+  background: #ffd60a;
+  color: black;
+  font-weight: bold;
 }
