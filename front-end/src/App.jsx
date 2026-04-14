@@ -74,7 +74,7 @@ function App() {
 
       {/* Catalogue */}
       {genreActuel === "Tous" ? (
-        <Catalogue movies={moviesFiltre} genres={genres} onUpdateFavoris={updateFavoris} favoris={favoris} />
+        <Catalogue movies={moviesFiltre} genres={genres} onUpdateFavoris={updateFavoris} favoris={favoris} setGenreActuel={setGenreActuel}/>
       ) : (
         <MovieList movies={moviesFiltre} onUpdateFavoris={updateFavoris} favoris={favoris} />
       )}

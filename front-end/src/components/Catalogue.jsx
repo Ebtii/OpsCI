@@ -1,6 +1,6 @@
 import MovieList from "./MovieList";
 
-function Catalogue({movies, genres, onUpdateFavoris, favoris}) {
+function Catalogue({movies, genres, onUpdateFavoris, favoris, setGenreActuel}) {
 
     return (
         <div>
@@ -16,7 +16,7 @@ function Catalogue({movies, genres, onUpdateFavoris, favoris}) {
                     <section className="section-suggestion" key={genre}>
                         <div className="entete-suggestion">
                             <h2>{genre}</h2>
-                            <button className="voir-tout">Tout voir</button>
+                            <button className="voir-tout" onClick={() => setGenreActuel(genre)}>Tout voir</button>
                         </div>
 
                         <MovieList movies={filmsParGenre.slice(0,5)} onUpdateFavoris={onUpdateFavoris} favoris={favoris} />
