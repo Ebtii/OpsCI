@@ -117,6 +117,7 @@ h1 {
   display: flex;
   gap: 10px;
   padding: 20px 5%;
+  background: var(--bg-dark)
 }
 
 .badge-genre {
@@ -222,11 +223,11 @@ h1 {
 /* Bannière principale du haut du site */
 .ban-principale {
   height: 80vh;
-  background-image: url('https://www.screentune.com/wp-content/uploads/2019/01/546680.jpg');
   background-size: cover;
   background-position: center;
   position: relative;
   margin-bottom: 20px;
+  transition: background-image 0.5s ease-in-out;
 }
 
 .voile-ban {
@@ -333,3 +334,65 @@ h1 {
   color: black;
   font-weight: bold;
 }
+
+/* Page par film */
+.page-details {
+  position: relative;
+  min-height: 100vh;
+  padding: 40px;
+  color: white;
+  z-index: 1; 
+}
+
+.bouton-retour {
+  position: absolute;
+  background: none;
+  border: solid white;
+  color: white; 
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  border-radius: 20px;
+}
+
+.contenu-page {
+  background: #1a1a1a;
+  width: 90%;
+  max-width: 800px;
+  height: auto;
+  max-height: 90vh;
+  border-radius: 12px; 
+  overflow: hidden;
+  display: flex; 
+  flex-direction: row;
+  position: relative;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.header-page {
+  display: flex;
+  gap: 50px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 30px;
+  border-radius: 15px;
+}
+
+.affiche-gauche {
+  width: 350px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+.infos-page h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.informations-film {
+  color: #ffcc00;
+  margin-bottom: 20px;
+}
+
+

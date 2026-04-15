@@ -1,6 +1,6 @@
 import MovieList from "./MovieList";
 
-function Catalogue({movies, genres, onUpdateFavoris, favoris, setGenreActuel}) {
+function Catalogue({movies, genres, onUpdateFavoris, favoris, setGenreActuel, onSelectMovie}) {
 
     return (
         <div>

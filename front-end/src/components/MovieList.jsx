@@ -2,7 +2,7 @@ import MovieCard from "./MovieCard" ;
 // Composant liste de films utilisant MovieCard
 
 // Affiche pour chaque film du tableau sa MovieCard
-function MovieList({movies, onUpdateFavoris, favoris}) {
+function MovieList({movies, onUpdateFavoris, favoris, onSelectMovie}) {
     return (
         /* activation de l'affichage en grille */
         <div className="grille-films">
@@ -10,7 +10,7 @@ function MovieList({movies, onUpdateFavoris, favoris}) {
                 <MovieCard key={indice} movie={movie} 
                     onClickFavoris={onUpdateFavoris}
                     /* Vérification si favoris */
-                    estFavoris={favoris.some(f => f.title === movie.title)}/>
+                    estFavoris={favoris.some(f => f.title === movie.title)} onSelectMovie={onSelectMovie}/>
             ))}
         </div>
     ) ;    

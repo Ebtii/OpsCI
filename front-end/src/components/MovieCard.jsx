@@ -2,12 +2,12 @@
 
 // movie est une propriété dite props
 
-function MovieCard({movie, onClickFavoris, estFavoris}) {
+function MovieCard({movie, onClickFavoris, estFavoris, onSelectMovie}) {
     // s'il n'y a pas d'image associé au film : attribution par défaut
-    const imgSrc = movie.image_url ? movie.image_url : "/images/tbc.png" ;
+    const imgSrc = movie.poster_path ? movie.poster_path : "/images/tbc.png" ;
 
     return (
-        <div className="carte-film">
+        <div className="carte-film" onClick={() => onSelectMovie(movie)}>
             <img className="image-film" src={imgSrc} alt={movie.title}/>
             <div className="infos-film">
                 <h2>{movie.title}</h2>
