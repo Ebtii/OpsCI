@@ -1,0 +1,80 @@
+/* Fichier CSS de SearchBar.jsx */
+/* SearchBar.css */
+
+/* Barre de recherche */
+.zone-recherche {
+  display: none;
+}
+
+.conteneur-recherche {
+  position: relative;
+  display: flex;  
+  align-items: center;
+}
+
+/* Champ de saisie */
+.entree-recherche {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 8px 15px 8px 35px;
+  border-radius: 8px;
+  transition: var(--transition);
+  width: 180px;
+}
+
+/* Lors du click sur la barre cad FOCUS */
+.entree-recherche:focus {
+  border-color: white;  /* la bordure brille */
+  background: black;  /* le fond devient noir */
+  width: 250px; /* allongement de la barre */
+  outline: none;   /* retirer tout contour */
+}
+
+.bouton-recherche {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: var(--transition);
+}
+
+.menu-deroulant {
+  position: absolute;
+  top: 105%;
+  left: 0;
+  right: 0;
+  background-color: #1A1A1A;
+  border: 1px solid #333;
+  border-radius: 8px;
+  z-index: 2000;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.ens-sugg {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  gap: 15px;
+  cursor: pointer;
+  color: #ffffff;
+  transition: background 0.2s;
+}
+
+.ens-sugg:hover {
+  background-color: #333;
+}
+
+.poster-miniature {
+  width: 30px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+
+
+
+

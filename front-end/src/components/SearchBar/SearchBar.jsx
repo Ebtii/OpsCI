@@ -1,4 +1,5 @@
 import {useState} from "react" ;
+import "./SearchBar.css";
 
 // Composant barre de recherche
 function SearchBar({search, onSearchChange}) {

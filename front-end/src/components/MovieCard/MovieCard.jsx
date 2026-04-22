@@ -1,4 +1,4 @@
-// Composant affiche de film
+import "./MovieCard.css";
 
 // movie est une propriété dite props
 
@@ -13,7 +13,7 @@ function MovieCard({movie, onClickFavoris, estFavoris, onSelectMovie}) {
                 <h2>{movie.title}</h2>
             </div>
             {/* Ajout du bouton coeur pour les favoris */}
-            <button className={`bouton-favoris ${estFavoris ? 'actif' : ''}`} onClick={() => onClickFavoris(movie)} >
+            <button className={`bouton-favoris ${estFavoris ? 'actif' : ''}`} onClick={(e) => {e.stopPropagation(); onClickFavoris(movie); }} >
                 {estFavoris ? '❤️' : '🤍'}
             </button>
         </div>

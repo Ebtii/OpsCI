@@ -1,0 +1,12 @@
+/* Fichier CSS de MovieList.jsx */
+/* MovieList.css */
+
+/* Grille de Films (Mise en page Responsive) */
+.grille-films {
+  display: grid; /* rangement en grille */
+  /* repeat(auto-fill) génère automatiquement l'affichage (nb colonne) lors de zoom */
+  /* minmax(220px, 1fr) garantit que chaque carte fait min 220px de large */
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 20px; /* espace entre les éléments de la grille */
+  
+}

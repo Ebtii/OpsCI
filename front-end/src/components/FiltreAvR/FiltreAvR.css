@@ -1,0 +1,73 @@
+/* Fichier CSS de FiltreAvR.jsx */
+/* FiltreAvR.css */
+
+.barre-filtres {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 30px;
+    background: rgba(255, 255, 255, 0.05);/*var(--card-bg);*/
+    backdrop-filter: blur(10px);
+    padding: 12px 30px;
+    border-radius: 6px;
+    margin: 20px 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.barre-filtres select, .barre-filtres input[type="number"] {
+    background: var(--bg-dark);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px;
+    border-radius: 6px;
+    outline: none;
+}
+
+.filtre-categorie {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filtre-categorie label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    font-weight: bold;
+}
+
+.filtre-categorie select, .filtre-categorie input {
+    background: #1a202c;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px 15px;
+    border-radius: 8px;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 150px;
+}
+
+.filtre-categorie select:hover, .filtre-categorie input:hover {
+    border-color: var(--primary-color);
+    background: #2d3748;
+}
+
+.filtre-note {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-muted) ;
+    font-size: 0.9rem;
+    border-radius: 8px;
+}
+
+.filtre-annee {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-muted) ;
+    font-size: 0.9rem;
+    border-radius: 8px;
+}

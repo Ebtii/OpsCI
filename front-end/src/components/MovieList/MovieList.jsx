@@ -1,4 +1,6 @@
-import MovieCard from "./MovieCard" ;
+import MovieCard from "../MovieCard/MovieCard" ;
+import "./MovieList.css";
+
 // Composant liste de films utilisant MovieCard
 
 // Affiche pour chaque film du tableau sa MovieCard

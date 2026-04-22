@@ -87,7 +87,7 @@ def get_movies(limit: Optional[int] = None):
 
 # Fonction Fetch dans TMDB
 def fetch_tmdb_movies():
-    movies = []
+    movies = {} # pour éviter les doublons
 
     for page in range(1,4): 
         url = "https://api.themoviedb.org/3/movie/popular"
@@ -97,7 +97,8 @@ def fetch_tmdb_movies():
         reponse = requests.get(url, headers=headers, params=params)
         reponse.raise_for_status()
 
-        # Ajout de 20 nouveaux films à la liste original à chaque tour
-        movies.extend(reponse.json().get("results", []))
-
-    return {"results" : movies}
+        results = reponse.json().get("results", [])
+        for m in results:
+            movies[m["title"]] = m
+    
+    return {"results" : list(movies.values())}

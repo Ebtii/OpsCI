@@ -1,0 +1,89 @@
+/* Fichier CSS de Banner.jsx */
+/* Banner.css */
+
+/* Bannière principale du haut du site */
+.ban-principale {
+  height: 500px;
+  max-width: var(--max-width);
+  width: 100%;
+  margin: 0 auto 40px auto;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  transition: background-image 0.5s ease-in-out;
+  overflow: hidden;
+}
+
+.voile-ban {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(to top, rgba(15, 23, 42, 1) 0%, rgba(15, 23, 42, 0.7) 40%, rgba(15, 23, 42, 0) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;  /* pousse le texte vers le bas */
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.contenu-ban {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.align-titre-bouton {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+  gap: 20px;
+}
+
+.titre-ban {
+  font-size: 3rem;
+  margin: 0;
+  color: white;
+  flex: 1;
+  line-height: 1;
+  font-weight: 900;
+}
+
+.description-ban {
+  color: white;
+  font-size: 1.1rem;
+  margin-top: 0;
+  line-height: 1.5;
+  max-width: 800px;
+}
+
+.bouton-ban {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.bouton-info {
+  background-color: rgba(109, 109, 110, 0.7);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  backdrop-filter: blur(5px);
+  height: fit-content;
+  align-self: flex-end;
+  white-space: nowrap; 
+  margin-bottom: 5px;
+  transition: var(--transition);
+}
+
+.bouton-info:hover {
+  background-color: var(--primary-color);
+  color: white;
+  transform: scale(1.05);
+}
+
+

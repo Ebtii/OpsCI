@@ -1,0 +1,91 @@
+/* Fichier CSS de NavBar.jsx */
+/* NavBar.css */
+
+.barnav {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0,0,0,0.7) 100%); /* fond à moitié transparent */
+  backdrop-filter: blur(10px); /* effet flou */
+  position: fixed; /* ne bouge pas/reste en haut lorqu'on scroll */
+  top: 0;
+  left: 0; 
+  width: 100%;
+  height: 70px;
+  z-index: 1000; /* passe au dessus de tout le reste */
+  display: flex; /* alignement horizontal */
+  justify-content: center; /* espace entre logo & profil */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.contenu-nav {
+  width: 100%;
+  max-width: var(--max-width);
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.groupe-droite-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.conteneur-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.img-logo {
+  height: 70px;
+  width: auto;
+  object-fit: contain;
+}
+
+.nom-site {
+  font-weight: 900;
+  font-size: 1.2rem;
+  letter-spacing: -1px;
+}
+
+.menu-navigation {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.onglet, .onglet-actif {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: var(--transition); 
+}
+
+.onglet {
+  background: transparent;
+  color: var(--text-muted);
+}
+
+/* Effet au survol pour les boutons inactifs */
+.onglet:hover {
+  background-color: var(--primary-color);
+  color: white;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); /* ombre pour faire ressortir l'onglet selectionné */
+}
+
+.onglet-actif {
+   background: white;
+    color: black;
+}
+
+.bloc-search {
+   display: flex;
+   flex-direction: column;
+}

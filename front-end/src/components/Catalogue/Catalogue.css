@@ -1,0 +1,42 @@
+/* Fichier CSS de Catalogue.jsx */
+/* Catalogue.css */
+
+.section-suggetsion {
+    margin-bottom: 50px;
+}
+
+.entete-suggestion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.entete-suggestion h2 {
+  font-size: 1.8rem;
+  margin: 0;
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.voir-tout {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 0.9rem;
+}
+
+.voir-tout:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+.voir-tout.actif {
+  background: #ffd60a;
+  color: black;
+  font-weight: bold;
+}

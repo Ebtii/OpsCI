@@ -1,12 +1,17 @@
-import MovieList from "./MovieList";
+import MovieList from "../MovieList/MovieList";
+import "./Catalogue.css";
 
-function Catalogue({movies, genres, onUpdateFavoris, favoris, setGenreActuel, onSelectMovie}) {
+function Catalogue({movies = [], genres = [], onUpdateFavoris, favoris, setGenreActuel, onSelectMovie}) {
+
+    if (!genres || genres.length === 0) {
+        return <p>Chargement des catégories...</p> ;
+    }
 
     return (
         <div>
             {genres.slice(1).map((genre) => {
                 // Liste des films du genre = genre
-                const filmsParGenre = movies.filter(m => m.genre === genre) ;
+                const filmsParGenre = movies.filter(m => m && m.genre === genre) ;
 
                 if (filmsParGenre.length === 0) {
                     return null ;
@@ -19,7 +24,7 @@ function Catalogue({movies, genres, onUpdateFavoris, favoris, setGenreActuel, on
                             <button className="voir-tout" onClick={() => setGenreActuel(genre)}>Tout voir</button>
                         </div>
 
-                        <MovieList movies={filmsParGenre.slice(0,5)} onUpdateFavoris={onUpdateFavoris} favoris={favoris} />
+                        <MovieList movies={filmsParGenre.slice(0,5)} onUpdateFavoris={onUpdateFavoris} favoris={favoris} onSelectMovie={onSelectMovie}/>
                     </section>
                 ) ;
             })}

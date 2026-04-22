@@ -1,3 +1,5 @@
+import "./GenreFilter.css";
+
 function GenreFilter({genreActuel, setGenreActuel, genres}) {
 
     return (
