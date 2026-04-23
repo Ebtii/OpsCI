@@ -11,7 +11,7 @@ function Catalogue({movies = [], genres = [], onUpdateFavoris, favoris, setGenre
         <div>
             {genres.slice(1).map((genre) => {
                 // Liste des films du genre = genre
-                const filmsParGenre = movies.filter(m => m && m.genre === genre) ;
+                const filmsParGenre = movies.filter(m => m && Array.isArray(m.genre) && m.genre.includes(genre)) ;
 
                 if (filmsParGenre.length === 0) {
                     return null ;

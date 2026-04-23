@@ -30,7 +30,7 @@ function App() {
   // ----------- Chargement des données ---------- 
   useEffect(() => {
     console.log("Début du fetch :");
-    fetch("http://127.0.0.1:8000/movies")
+    fetch("http://138.195.165.89:8000/movies")
       .then(reponse => reponse.json())  // Transforme la réponse en JSON
       .then(data => {
         console.log("Films récupérés :", data); // Affiche les films récupérés dans le terminal
@@ -38,13 +38,28 @@ function App() {
       })
       .catch(error => console.error("Erreur fetch :", error));
   }, []);
+
+  const selectionnerMovie = (movie) => {
+    setSelectMovie(movie);
+
+    fetch(`http://138.195.165.89:8000/movies/${movie.id}`)
+      .then(reponse => {
+        if (!reponse.ok) throw new Error("Erreur serveur 500");
+        return reponse.json();  // Transforme la réponse en JSON
+      })
+      .then(data_total => {
+        console.log("Films récupérés :", data_total);
+        setSelectMovie(data_total);
+      })
+      .catch(error => console.error("Erreur lors du chargement des détails :", error));
+  } ;
     
   // ---------- Filtrage des films -----------
   const sourceMovies = vueFavoris ? favoris : STmovies;
 
   const moviesFiltree = sourceMovies.filter(movie => {
     const movieParSearch = movie.title.toLowerCase().includes(search.toLowerCase());  // Filtrage par TEXTE (recherche)
-    const movieParGenre = genreActuel === "Tous" || movie.genre === genreActuel ; // Filtrage par GENRE
+    const movieParGenre = genreActuel === "Tous" || (Array.isArray(movie.genre) && movie.genre.includes(genreActuel)) ; // Filtrage par GENRE
     const movieParAnnee = movie.year >= filtres.anneeMin ;  // Filtrage par ANNEE
     const movieParNote = movie.note >= filtres.noteMin ;  // Filtrage par NOTE
     
@@ -102,10 +117,11 @@ function App() {
     }
   }
 
+  console.log("Nombre de films à afficher :", moviesFiltree.length);
   return (
     <div className="page-principale">
       {/* Barre de navigation */}
-      <NavBar search={search} setSearch={handleSearch} vueFavoris={vueFavoris} setVueFavoris={afficherFavoris} favoris={favoris} onLogoClick={retourAccueil} STmovies={STmovies} onSelectMovie={setSelectMovie}/>
+      <NavBar search={search} setSearch={handleSearch} vueFavoris={vueFavoris} setVueFavoris={afficherFavoris} favoris={favoris} onLogoClick={retourAccueil} STmovies={STmovies} onSelectMovie={selectionnerMovie}/>
 
       {selectMovie ? (
         /* Vue détaillée du film */
@@ -123,16 +139,16 @@ function App() {
 
           {/* Bannière principale */}
           {/* Affichage de la bannière seulement si on n'est pas dans les favoris et qu'aucun est sélectionné */}
-          {!vueFavoris && !selectMovie && <Banner movie={movieBan} onSelectMovie={setSelectMovie}/> }
+          {!vueFavoris && !selectMovie && <Banner movie={movieBan} onSelectMovie={selectionnerMovie}/> }
 
           {/* Filtres avancés */}
           <FiltreAvR filtres={filtres} setFiltres={setFiltres} />
 
           {/* Affichage : Catalogue || Liste */}
-          {genreActuel === "Tous" || !vueFavoris ? (
-            <Catalogue movies={moviesFiltree} genres={genres} onUpdateFavoris={updateFavoris} favoris={favoris} setGenreActuel={setGenreActuel} onSelectMovie={setSelectMovie} />
+          {genreActuel === "Tous" && !vueFavoris ? (
+            <Catalogue movies={moviesFiltree} genres={genres} onUpdateFavoris={updateFavoris} favoris={favoris} setGenreActuel={setGenreActuel} onSelectMovie={selectionnerMovie} />
           ) : (
-            <MovieList movies={moviesFiltree} onUpdateFavoris={updateFavoris} favoris={favoris} onSelectMovie={setSelectMovie}/>
+            <MovieList movies={moviesFiltree} onUpdateFavoris={updateFavoris} favoris={favoris} onSelectMovie={selectionnerMovie}/>
           )}
         </>
       )}
