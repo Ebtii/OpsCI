@@ -9,9 +9,68 @@ from typing import Optional
 from datetime import datetime
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+from fastapi import Depends, HTTPException
+from sqlalchemy.orm import Session
+from passlib.context import CryptContext
+from jose import jwt, JWTError
+from datetime import datetime, timedelta, timezone
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
+from database import Base, engine, get_db
+import models
+import schemas
+import repository
 
 # Création de l'objet application
 app = FastAPI(title="WatchNext API") # contient toutes les routes + gères les requêtes
+
+# Création des tables dans la base de données
+Base.metadata.create_all(bind=engine)
+
+# Configuration du hachage des mots de passe
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# Configuration JWT
+SECRET_KEY = "mysecretkey"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+
+
+# Hacher le mot de passe
+def hash_password(password: str):
+    return pwd_context.hash(password)
+
+
+# Vérifier le mot de passe
+def verify_password(plain_password: str, hashed_password: str):
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+# Créer un token JWT
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+
+# Récupérer l'utilisateur connecté à partir du token
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email = payload.get("sub")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Token invalide")
+
+    user = repository.get_user_by_email(db, email)
+
+    if not user:
+        raise HTTPException(status_code=401, detail="Utilisateur introuvable")
+
+    return user
+
 
 # ------------ Gestion CORS -------------
 # Liste des origines autorisées à appeler le backend
@@ -187,3 +246,68 @@ def get_movies(query: str):
     
     except Exception as e :
         return {"error": str(e)}
+    
+
+@app.post("/auth/register")
+def register(user: schemas.UserRegister, db: Session = Depends(get_db)):
+    existing_user = repository.get_user_by_email(db, user.email)
+
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email déjà utilisé")
+
+    hashed_password = hash_password(user.password)
+    repository.create_user(db, user, hashed_password)
+
+    return {"message": "Utilisateur créé avec succès"}
+
+
+@app.post("/auth/login")
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
+    db_user = repository.get_user_by_email(db, form_data.username)
+
+    if not db_user:
+        raise HTTPException(status_code=400, detail="Identifiants invalides")
+
+    if not verify_password(form_data.password, db_user.password_hash):
+        raise HTTPException(status_code=400, detail="Identifiants invalides")
+
+    access_token = create_access_token(data={"sub": db_user.email})
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
+
+
+@app.post("/favorites")
+def add_favorite(
+    favorite: schemas.FavoriteCreate,
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    return repository.add_favorite(db, favorite, current_user.id)
+
+
+@app.get("/favorites")
+def get_favorites(
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    return repository.get_user_favorites(db, current_user.id)
+
+
+@app.delete("/favorites/{favorite_id}")
+def delete_favorite(
+    favorite_id: int,
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    deleted = repository.delete_favorite(db, favorite_id, current_user.id)
+
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Favori introuvable")
+
+    return {"message": "Favori supprimé"}
