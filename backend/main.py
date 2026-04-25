@@ -80,6 +80,54 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     return user
 
 
+# Création des tables dans la base de données
+Base.metadata.create_all(bind=engine)
+
+# Configuration du hachage des mots de passe
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# Configuration JWT
+SECRET_KEY = "mysecretkey"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+
+
+# Hacher le mot de passe
+def hash_password(password: str):
+    return pwd_context.hash(password)
+
+
+# Vérifier le mot de passe
+def verify_password(plain_password: str, hashed_password: str):
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+# Créer un token JWT
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+
+# Récupérer l'utilisateur connecté à partir du token
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email = payload.get("sub")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Token invalide")
+
+    user = repository.get_user_by_email(db, email)
+
+    if not user:
+        raise HTTPException(status_code=401, detail="Utilisateur introuvable")
+
+    return user
+
+
 # ------------ Gestion CORS -------------
 # Liste des origines autorisées à appeler le backend
 origines = [ 
