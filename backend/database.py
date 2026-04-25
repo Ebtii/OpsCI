@@ -1,23 +1,22 @@
+import os
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-# URL de la base de données (SQLite pour test)
-DATABASE_URL = "sqlite:///./test.db"
+# Charger les variables d'environnement
+load_dotenv()
 
-# Création du moteur de connexion
-engine = create_engine(
-    DATABASE_URL,
-    connect_args={"check_same_thread": False}
-)
+# Connexion PostgreSQL depuis le fichier .env
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Création de la session (interaction avec la DB)
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+engine = create_engine(DATABASE_URL)
 
-# Base pour les modèles (tables)
+SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+
 Base = declarative_base()
 
 
-# Dépendance pour FastAPI (gestion de session)
+# Session de base de données pour FastAPI
 def get_db():
     db = SessionLocal()
     try:
