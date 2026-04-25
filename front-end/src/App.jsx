@@ -30,7 +30,7 @@ function App() {
   // ----------- Chargement des données ---------- 
   useEffect(() => {
     console.log("Début du fetch :");
-    fetch("http://138.195.165.89:8000/movies")
+    fetch("http://127.0.0.1:8000/movies")
       .then(reponse => reponse.json())  // Transforme la réponse en JSON
       .then(data => {
         console.log("Films récupérés :", data); // Affiche les films récupérés dans le terminal
@@ -42,7 +42,7 @@ function App() {
   const selectionnerMovie = (movie) => {
     setSelectMovie(movie);
 
-    fetch(`http://138.195.165.89:8000/movies/${movie.id}`)
+    fetch(`http://127.0.0.1:8000/movies/${movie.id}`)
       .then(reponse => {
         if (!reponse.ok) throw new Error("Erreur serveur 500");
         return reponse.json();  // Transforme la réponse en JSON
@@ -53,23 +53,44 @@ function App() {
       })
       .catch(error => console.error("Erreur lors du chargement des détails :", error));
   } ;
-    
+
+  useEffect(() => {
+  fetch("http://127.0.0.1:8000/favorites")
+    .then(res => res.json())
+    .then(async (data) => {
+
+      const moviesFromTMDB = await Promise.all(
+        data.map(async (fav) => {
+          const res = await fetch(
+            `https://api.themoviedb.org/3/movie/${fav.tmdb_id}?api_key=c1df2212a64a5876a6429d7c4aa3ea06`
+          );
+          return res.json();
+        })
+      );
+
+      setFavoris(moviesFromTMDB);
+    })
+    .catch(err => console.error(err));
+}, []);
+   
+
   // ---------- Filtrage des films -----------
   const sourceMovies = vueFavoris ? favoris : STmovies;
 
-  const moviesFiltree = sourceMovies.filter(movie => {
-    const movieParSearch = movie.title.toLowerCase().includes(search.toLowerCase());  // Filtrage par TEXTE (recherche)
-    const movieParGenre = genreActuel === "Tous" || (Array.isArray(movie.genre) && movie.genre.includes(genreActuel)) ; // Filtrage par GENRE
-    const movieParAnnee = movie.year >= filtres.anneeMin ;  // Filtrage par ANNEE
-    const movieParNote = movie.note >= filtres.noteMin ;  // Filtrage par NOTE
-    
-    return movieParGenre && movieParAnnee && movieParNote && movieParSearch ;
-  }).sort((a, b) => {
-    if (filtres.tri === "recent") return b.year - a.year ; 
-    if (filtres.tri === "note") return b.note - a.note ; 
-    
-    return 0 ; 
-  });
+  const moviesFiltree = vueFavoris
+  ? favoris
+  : sourceMovies.filter(movie => {
+      const movieParSearch = movie.title.toLowerCase().includes(search.toLowerCase());
+      const movieParGenre = genreActuel === "Tous" || (Array.isArray(movie.genre) && movie.genre.includes(genreActuel));
+      const movieParAnnee = movie.year >= filtres.anneeMin;
+      const movieParNote = movie.note >= filtres.noteMin;
+
+      return movieParGenre && movieParAnnee && movieParNote && movieParSearch;
+    }).sort((a, b) => {
+      if (filtres.tri === "recent") return b.year - a.year;
+      if (filtres.tri === "note") return b.note - a.note;
+      return 0;
+    });
 
   // ---------- Gestion de la bannière (auto-changement) ---------- 
   useEffect(() => {
@@ -105,18 +126,77 @@ function App() {
     setVueFavoris(true) ;
     setSearch("") ; // Vidage de la recherche pour voir tous les favoris directement
   }
+  const updateFavoris = async (movie) => {
+  try {
+    const token = localStorage.getItem("token");
+    const movieTmdbId = movie.tmdb_id || movie.id;
 
-  // Fonctionnalité favoris : props pour les favoris
-  // Fonction ajouter/retirer
-  const updateFavoris = (movie) => {
-    const estFavoris = favoris.some(fav => fav.title === movie.title);
-    if (estFavoris) { // Si favoris alors il est retiré de la liste
-      setFavoris(favoris.filter(fav => fav.title !== movie.title));
-    } else {  // Sinon il est ajouté
-      setFavoris([...favoris, movie]);
+    const resGet = await fetch("http://127.0.0.1:8000/favorites", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const favorisDB = await resGet.json();
+    const favoriExiste = favorisDB.find(fav => fav.tmdb_id === movieTmdbId);
+
+    if (favoriExiste) {
+      await fetch(`http://127.0.0.1:8000/favorites/${favoriExiste.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+    } else {
+      await fetch("http://127.0.0.1:8000/favorites", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          title: movie.title,
+          tmdb_id: movieTmdbId,
+          poster_path: movie.poster_path
+        })
+      });
     }
-  }
 
+    const resFinal = await fetch("http://127.0.0.1:8000/favorites", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = await resFinal.json();
+
+    const moviesFromTMDB = await Promise.all(
+      data.map(async (fav) => {
+        const res = await fetch(
+          `https://api.themoviedb.org/3/movie/${fav.tmdb_id}?api_key=c1df2212a64a5876a6429d7c4aa3ea06`
+        );
+        const movieData = await res.json();
+
+        return {
+          ...movieData,
+          favorite_id: fav.id,
+          tmdb_id: fav.tmdb_id
+        };
+      })
+    );
+
+    setFavoris(moviesFromTMDB);
+
+  } catch (error) {
+    console.error("Erreur favoris :", error);
+  }
+};
+
+  
+    
+     
+  
+ 
   console.log("Nombre de films à afficher :", moviesFiltree.length);
   return (
     <div className="page-principale">
@@ -158,4 +238,4 @@ function App() {
 
 // Le [] vide signifie “ne se relance jamais automatiquement"
 
-export default App ; 
+export default App ;

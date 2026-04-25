@@ -25,11 +25,7 @@ def add_favorite(db: Session, favorite: schemas.FavoriteCreate, user_id: int):
     db_favorite = models.Favorite(
         tmdb_id=favorite.tmdb_id,
         title=favorite.title,
-        description=favorite.description,
         poster_path=favorite.poster_path,
-        year=favorite.year,
-        genre=favorite.genre,
-        note=favorite.note,
         user_id=user_id
     )
     db.add(db_favorite)
@@ -42,13 +38,16 @@ def add_favorite(db: Session, favorite: schemas.FavoriteCreate, user_id: int):
 def get_user_favorites(db: Session, user_id: int):
     return db.query(models.Favorite).filter(models.Favorite.user_id == user_id).all()
 
+# Récupérer tous les favoris
+def get_all_favorites(db: Session):
+    return db.query(models.Favorite).all()
+
 
 # Supprimer un favori d'un utilisateur
 def delete_favorite(db: Session, favorite_id: int, user_id: int):
     favorite = db.query(models.Favorite).filter(
-        models.Favorite.id == favorite_id,
-        models.Favorite.user_id == user_id
-    ).first()
+    models.Favorite.id == favorite_id
+).first()
 
     if favorite:
         db.delete(favorite)

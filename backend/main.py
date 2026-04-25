@@ -317,16 +317,42 @@ def get_movies(limit: Optional[int] = None):
             liste = results.get("results", [])
             for m in liste :
                 movies.append(normalize_tmdb_movie(m))
-        return movies[:limit]
+        if limit:
+            return movies[:limit]        
+        return movies
 
     except Exception as e :
-        return {"error": str(e)}
+        raise HTTPException(status_code=500,detail=str(e))
 
+
+# Route pour chercher des films par leurs noms
+@app.get("/movies/search")
+def search_movies(query: str):
+    """Route 'Recherche'permettant de chercher des films par leurs noms"""
+    
+    if not query: 
+        return []
+
+    try :
+        # Appel de la recherche TMDB avec mot-clé query
+        results = tmdb_get_movies("/search/movie", params={"language": "fr-FR", "query": query}, page=1)
+        liste = results.get("results", [])
+        return [normalize_tmdb_movie(m) for m in liste]
+    
+    except Exception as e :
+        raise HTTPException(status_code=500, detail=f"Film non trouvé : {str(e)}")
+
+@app.get("/movies")
+def get_movies():
+    results = tmdb_get_movies("/movie/popular")
+    liste = results.get("results", [])
+    return [normalize_tmdb_movie(m) for m in liste]
 
 # Route pour ouvrir la fiche d'un film
 @app.get("/movies/{movie_id}")
 def get_movie_detail(movie_id: int):
     """Route 'Fiche spécifique' permettant de récupérer toues les infos sur un film spécifique."""
+
     
     try:
         # Lancement des appels vers les 3 endpoints de TMDB
@@ -342,24 +368,6 @@ def get_movie_detail(movie_id: int):
         raise HTTPException(status_code=500, detail=f"Film non trouvé : {str(e)}")
     
 
-# Route pour chercher des films par leurs noms
-@app.get("/movies/search")
-def get_movies(query: str):
-    """Route 'Recherche'permettant de chercher des films par leurs noms"""
-    
-    if not query: 
-        return []
-
-    try :
-        # Appel de la recherche TMDB avec mot-clé query
-        results = tmdb_get_movies("search/movie", params={"language": "fr-FR", "query": query}, page=1)
-        liste = results.get("results", [])
-        return [normalize_tmdb_movie(m) for m in liste]
-    
-    except Exception as e :
-        return {"error": str(e)}
-    
-
 @app.post("/auth/register")
 def register(user: schemas.UserRegister, db: Session = Depends(get_db)):
     existing_user = repository.get_user_by_email(db, user.email)
@@ -373,7 +381,7 @@ def register(user: schemas.UserRegister, db: Session = Depends(get_db)):
     return {"message": "Utilisateur créé avec succès"}
 
 
-@app.post("/auth/login")
+@app.post("/auth/login",response_model=schemas.TokenResponse)
 def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
@@ -397,18 +405,16 @@ def login(
 @app.post("/favorites")
 def add_favorite(
     favorite: schemas.FavoriteCreate,
-    current_user=Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    return repository.add_favorite(db, favorite, current_user.id)
+    return repository.add_favorite(db, favorite, 10)
 
 
 @app.get("/favorites")
 def get_favorites(
-    current_user=Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    return repository.get_user_favorites(db, current_user.id)
+    return repository.get_all_favorites(db)
 
 
 @app.delete("/favorites/{favorite_id}")
@@ -423,3 +429,15 @@ def delete_favorite(
         raise HTTPException(status_code=404, detail="Favori introuvable")
 
     return {"message": "Favori supprimé"}
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://10.0.2.15:5173"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)

@@ -4,7 +4,9 @@ import "./MovieCard.css";
 
 function MovieCard({movie, onClickFavoris, estFavoris, onSelectMovie}) {
     // s'il n'y a pas d'image associé au film : attribution par défaut
-    const imgSrc = movie.poster_path ? movie.poster_path : "/images/tbc.png" ;
+    const imgSrc = movie.poster_path
+  ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+  : "/images/tbc.png";
 
     return (
         <div className="carte-film" onClick={() => onSelectMovie(movie)}>
