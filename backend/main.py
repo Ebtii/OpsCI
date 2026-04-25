@@ -25,6 +25,7 @@ import repository
 app = FastAPI(title="WatchNext API") # contient toutes les routes + gères les requêtes
 load_dotenv()
 
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  
@@ -128,6 +129,13 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     return user
 
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # Création des tables dans la base de données
 Base.metadata.create_all(bind=engine)
 
@@ -135,7 +143,7 @@ Base.metadata.create_all(bind=engine)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Configuration JWT
-SECRET_KEY = "mysecretkey"
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
