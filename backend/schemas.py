@@ -24,8 +24,5 @@ class TokenResponse(BaseModel):
 class FavoriteCreate(BaseModel):
     tmdb_id: int
     title: str
-    description: Optional[str] = None
     poster_path: Optional[str] = None
-    year: Optional[str] = None
-    genre: Optional[str] = None
-    note: Optional[float] = None
+   
