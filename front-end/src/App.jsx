@@ -38,7 +38,7 @@ function App() {
       })
       .catch(error => console.error("Erreur fetch :", error));
   }, []);
-
+// Mise a jour du film selectionne avec les donnees completes
   const selectionnerMovie = (movie) => {
     setSelectMovie(movie);
 
@@ -53,12 +53,12 @@ function App() {
       })
       .catch(error => console.error("Erreur lors du chargement des détails :", error));
   } ;
-
+ // Recuperation des films favoris depuis le backend   
   useEffect(() => {
   fetch("http://127.0.0.1:8000/favorites")
     .then(res => res.json())
     .then(async (data) => {
-
+    // pour chaque favori, appel a l'API TMDB afin d'obtenir les details completes du film
       const moviesFromTMDB = await Promise.all(
         data.map(async (fav) => {
           const res = await fetch(
@@ -67,7 +67,7 @@ function App() {
           return res.json();
         })
       );
-
+    
       setFavoris(moviesFromTMDB);
     })
     .catch(err => console.error(err));
