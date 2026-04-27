@@ -358,3 +358,6 @@ def delete_favorite(
 
     return {"message": "Favori supprimé"}
 
+@app.get("/secure-test")
+def secure_test(token: str = Depends(oauth2_scheme)):
+    return {"msg": "secure"}
