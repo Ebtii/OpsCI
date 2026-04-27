@@ -15,9 +15,15 @@ function MovieCard({movie, onClickFavoris, estFavoris, onSelectMovie}) {
                 <h2>{movie.title}</h2>
             </div>
             {/* Ajout du bouton coeur pour les favoris */}
-            <button className={`bouton-favoris ${estFavoris ? 'actif' : ''}`} onClick={(e) => {e.stopPropagation(); onClickFavoris(movie); }} >
-                {estFavoris ? '❤️' : '🤍'}
-            </button>
+            <button 
+  className={`bouton-favoris ${estFavoris ? 'actif' : ''}`} 
+  onClick={(e) => {
+    e.stopPropagation();
+    onClickFavoris(movie);
+  }}
+>
+  {estFavoris ? '❤️' : '🤍'}
+</button>
         </div>
     );
 }
