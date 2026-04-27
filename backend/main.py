@@ -253,6 +253,29 @@ def get_movies():
     liste = results.get("results", [])
     return [normalize_tmdb_movie(m) for m in liste]
 
+# Route pour chercher des films par leurs noms
+@app.get("/movies/search")
+def search_movies(query: str):
+    """Route 'Recherche'permettant de chercher des films par leurs noms"""
+    
+    if not query: 
+        return []
+
+    try :
+        # Appel de la recherche TMDB avec mot-clé query
+        results = tmdb_get_movies("/search/movie", params={"language": "fr-FR", "query": query}, page=1)
+        liste = results.get("results", [])
+        return [normalize_tmdb_movie(m) for m in liste]
+    
+    except Exception as e :
+        raise HTTPException(status_code=500, detail=f"Film non trouvé : {str(e)}")
+
+@app.get("/movies")
+def get_movies():
+    results = tmdb_get_movies("/movie/popular")
+    liste = results.get("results", [])
+    return [normalize_tmdb_movie(m) for m in liste]
+
 # Route pour ouvrir la fiche d'un film
 @app.get("/movies/{movie_id}")
 def get_movie_detail(movie_id: int):
