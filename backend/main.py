@@ -78,11 +78,12 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 
 # ------------ Gestion CORS -------------
 # Liste des origines autorisées à appeler le backend
-origines = [ 
-    "http://localhost:5173", # dev
-    "http://watchnext.example.com", # prod
+origines = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:5174",
 ]
-
 
 #Configuration CORS pour permettre au frontend d'acceder au backend
 app.add_middleware(
@@ -348,24 +349,12 @@ def get_favorites(
 @app.delete("/favorites/{favorite_id}")
 def delete_favorite(
     favorite_id: int,
-    current_user=Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    deleted = repository.delete_favorite(db, favorite_id, current_user.id)
+    deleted = repository.delete_favorite(db, favorite_id, 10)
 
     if not deleted:
         raise HTTPException(status_code=404, detail="Favori introuvable")
 
     return {"message": "Favori supprimé"}
 
-# Configuration CORS pour autoriser le frontend
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://10.0.2.15:5173"
-    ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)

@@ -129,7 +129,8 @@ function App() {
   const updateFavoris = async (movie) => {
   try {
     const token = localStorage.getItem("token");
-    const movieTmdbId = movie.tmdb_id || movie.id;
+    console.log("TOKEN =",token);
+    const movieTmdbId = movie.tmdb_id ?? movie.id;
 
     const resGet = await fetch("http://127.0.0.1:8000/favorites", {
       headers: {
@@ -147,6 +148,7 @@ function App() {
           Authorization: `Bearer ${token}`
         }
       });
+      setFavoris(prev => prev.filter(fav => fav.tmdb_id !== movieTmdbId));
     } else {
       await fetch("http://127.0.0.1:8000/favorites", {
         method: "POST",
