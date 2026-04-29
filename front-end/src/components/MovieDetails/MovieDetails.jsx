@@ -34,10 +34,10 @@ function MovieDetails({ movie, onRetourAccueil, onUpdateFavoris, estFav }) {
 
                 <div className="infos-movie">
                     <span className="date-movie"> <b>Sortie :</b> {movie.date}</span>
-                    {movie.duree && <span> <b>Durée :</b> {movie.duree} min</span>}
+                    <span><b>Durée :</b> {movie.duree && movie.duree > 0 ? `${movie.duree} min` : "Non renseignée"}</span>
                     <span className="movie-origin"><b>Nationalité :</b> {movie.pays_og}</span>
                     <span className="genre-movie"> <b>Genre :</b> {movie.genre?.join(", ")}</span> 
-                    <span className="note-movie"> <b>Note :</b> {movie.note}/10 ⭐ </span> 
+                    <span className="note-movie"> <b>Note :</b> {movie.note && movie.note > 0 ? `${movie.note}/10 ⭐` : "-"}</span> 
                     {/* Acteurs */}
                     {movie.acteurs && movie.acteurs.length > 0 && (
                         <div className="acteurs">
@@ -56,7 +56,7 @@ function MovieDetails({ movie, onRetourAccueil, onUpdateFavoris, estFav }) {
 
                 <div className="synopsis">  
                     <h3>Synopsis</h3>
-                    <p className="description-movie">{movie.description}</p>
+                    <p className="description-movie">{movie.description || "Aucun synopsis disponible pour ce film."}</p>
                 </div>
             </div>
         </div>

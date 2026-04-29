@@ -8,12 +8,14 @@ function MovieList({movies, onUpdateFavoris, favoris, onSelectMovie}) {
     return (
         /* activation de l'affichage en grille */
         <div className="grille-films">
-            {movies.map((movie, indice) => (
-                <MovieCard key={indice} movie={movie} 
-                    onClickFavoris={onUpdateFavoris}
-                    /* Vérification si favoris */
-                    estFavoris={favoris.some(f => f.title === movie.title)} onSelectMovie={onSelectMovie}/>
-            ))}
+            {movies.map((movie) => {
+                const movieCourant = movie.movie_id || movie.id;
+                const estFavoris = favoris.some(f => Number(f.movie_id) === Number(movieCourant));
+
+                return (
+                    <MovieCard key={movie.id} movie={movie} onClickFavoris={onUpdateFavoris} estFavoris={estFavoris} onSelectMovie={onSelectMovie}/>
+                );
+            })}
         </div>
     ) ;    
 }

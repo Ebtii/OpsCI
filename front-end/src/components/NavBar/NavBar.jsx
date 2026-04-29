@@ -1,10 +1,12 @@
+import { useState } from "react";
 import SearchBar from "../SearchBar/SearchBar" ;
 import SearchSuggestions from "../SearchSuggestions/SearchSuggestions";
 import "./NavBar.css";
 
-function NavBar({search, setSearch, vueFavoris, setVueFavoris, favoris, onLogoClick, STmovies, onSelectMovie}) {
+function NavBar({search, setSearch, vueFavoris, setVueFavoris, favoris, onLogoClick, STmovies, onSelectMovie, estLogin, onOpenAuth, onLogout}) {
     
     const liste = Array.isArray(STmovies) ? STmovies : [] ; // si STmovies pas encore chargé => tableau vide
+    const [showMenuProfil, setShowMenuProfil] = useState(false) ; 
 
     const suggestions = search.length > 0 ? 
         liste.filter(m => m.title?.toLowerCase().includes(search.toLowerCase())).slice(0, 5) : [] ;
@@ -39,7 +41,23 @@ function NavBar({search, setSearch, vueFavoris, setVueFavoris, favoris, onLogoCl
                             Favoris ({favoris.length})
                         </button>
                     </div>
-                    
+
+                    {/*Bouton d'authentification */}
+                    <div className="zone-auth-nav">
+                        {estLogin ? (
+                            <div className="bloc-profil" onMouseEnter={() => setShowMenuProfil(true)} onMouseLeave={() => setShowMenuProfil(false)}>
+                                <button className="onglet-actif">Mon profil</button>
+
+                                {showMenuProfil && (
+                                    <div className="menu-deroulant">
+                                        <button className="bouton-logout" onClick={onLogout}>Déconnexion</button>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <button className="onglet" onClick={onOpenAuth}>Connexion</button>
+                        )}
+                    </div>
                 </div>
             </div>
         </nav>

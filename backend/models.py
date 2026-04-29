@@ -22,9 +22,9 @@ class Favorite(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
-    tmdb_id = Column(Integer, nullable=False)
-    title = Column(String)
+    movie_id = Column(Integer, nullable=False)
+    movie_title = Column(String)
     poster_path = Column(String)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-
+    
     user = relationship("User", back_populates="favorites")

@@ -41,17 +41,17 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
-# fonction pour Hacher le mot de passe
+# Hachage du mot de passe
 def hash_password(password: str):
     return pwd_context.hash(password)
 
 
-# fonction pour  Vérifier le mot de passe
+# Vérification du mot de passe
 def verify_password(plain_password: str, hashed_password: str):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-# fonction pour Créer un token JWT
+# fonction pour créer un token JWT
 def create_access_token(data: dict):
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -59,18 +59,18 @@ def create_access_token(data: dict):
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
-# fonction pour Récupérer l'utilisateur connecté à partir du token
+# Récupération de l'utilisateur connecté à partir du token
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-   #Decodage du token JWT
+   # décodage du token JWT
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email = payload.get("sub")
-    #Gestion des erreurs si le token est invalide
+    # gestion des erreurs si le token est invalide
     except JWTError:
         raise HTTPException(status_code=401, detail="Token invalide")
 
     user = repository.get_user_by_email(db, email)
-    # verification de l'existance de l'utilisateur
+    # vérification de l'existance de l'utilisateur
     if not user:
         raise HTTPException(status_code=401, detail="Utilisateur introuvable")
 
@@ -85,7 +85,7 @@ origines = [
     "http://127.0.0.1:5174",
 ]
 
-#Configuration CORS pour permettre au frontend d'acceder au backend
+# Configuration CORS pour permettre au frontend d'acceder au backend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origines,
@@ -123,8 +123,7 @@ DICO_GENRE = {
 
 # ------------ Outils de navigation ------------ 
 
-# Fetch dans TMDB
-# F onction utilitaire pour interagir avec l'API TMDB
+# Fonction utilitaire pour interagir avec l'API TMDB
 def tmdb_get_movies(path: str, page: int = 1, params: dict = None):
     """Fonction utilitaire pour échanger avec l'API externe TMDB"""
     # Construction de l'URL complete
@@ -142,7 +141,7 @@ def tmdb_get_movies(path: str, page: int = 1, params: dict = None):
     
     return reponse.json()
 
-# Fonction de Normalisation des donnees des films
+# Foction de normalisation des donnees des films
 def normalize_tmdb_movie(m: dict, details: dict = None, credits: dict = None, videos: dict = None) :
     """
     Normalisation : on filtre seulement les informations que l'on veut récupérer
@@ -188,7 +187,7 @@ def normalize_tmdb_movie(m: dict, details: dict = None, credits: dict = None, vi
         "description": m.get("overview"),
         "poster_path": f"https://image.tmdb.org/t/p/w500{m['poster_path']}" if m.get("poster_path") else "/images/tbc.png",
         "backdrop_path": f"https://image.tmdb.org/t/p/w500{m['backdrop_path']}" if m.get("backdrop_path") else "/images/tbc.png",
-        "duree": details.get("runtime") if details else None,   # durée en minutes
+        "duree": details.get("runtime") if details and details.get("runtime") else None,   # durée en minutes
         "date": m.get("release_date", "N/A"),
         "genre": nom_genres,
         "note": m.get("vote_average", 0),
@@ -200,13 +199,13 @@ def normalize_tmdb_movie(m: dict, details: dict = None, credits: dict = None, vi
         "year": (m.get("release_date") or "")[:4]
     }
 
-# Rout de test pour verifier que l'API fonctionne
+# Route de test pour verifier que l'API fonctionne
 @app.get("/hello")
 def hello():
     return {"message": "Hello World"}
 
 
-# Route principale pour récupérer les films pour l'accueil et les cartes
+# Route n°1 : principale pour récupérer les films pour l'accueil et les cartes
 @app.get("/movies")
 def get_movies(limit: Optional[int] = None):
     """Route 'Liste/Catalogue' permettant de récupérer les films populaires"""
@@ -226,12 +225,12 @@ def get_movies(limit: Optional[int] = None):
         if limit:
             return movies[:limit]        
         return movies
-    # Gestion  des erreures serveur
+    # Gestion des erreures serveur
     except Exception as e :
         raise HTTPException(status_code=500,detail=str(e))
 
 
-# Route pour chercher des films par leurs noms
+# Route n°2 : pour chercher des films par leurs noms
 @app.get("/movies/search")
 def search_movies(query: str):
     """Route 'Recherche'permettant de chercher des films par leurs noms"""
@@ -248,41 +247,12 @@ def search_movies(query: str):
     except Exception as e :
         raise HTTPException(status_code=500, detail=f"Film non trouvé : {str(e)}")
 
-@app.get("/movies")
-def get_movies():
-    results = tmdb_get_movies("/movie/popular")
-    liste = results.get("results", [])
-    return [normalize_tmdb_movie(m) for m in liste]
 
-# Route pour chercher des films par leurs noms
-@app.get("/movies/search")
-def search_movies(query: str):
-    """Route 'Recherche'permettant de chercher des films par leurs noms"""
-    
-    if not query: 
-        return []
-
-    try :
-        # Appel de la recherche TMDB avec mot-clé query
-        results = tmdb_get_movies("/search/movie", params={"language": "fr-FR", "query": query}, page=1)
-        liste = results.get("results", [])
-        return [normalize_tmdb_movie(m) for m in liste]
-    
-    except Exception as e :
-        raise HTTPException(status_code=500, detail=f"Film non trouvé : {str(e)}")
-
-@app.get("/movies")
-def get_movies():
-    results = tmdb_get_movies("/movie/popular")
-    liste = results.get("results", [])
-    return [normalize_tmdb_movie(m) for m in liste]
-
-# Route pour ouvrir la fiche d'un film
+# Route n°3 : pour ouvrir la fiche d'un film
 @app.get("/movies/{movie_id}")
 def get_movie_detail(movie_id: int):
     """Route 'Fiche spécifique' permettant de récupérer toues les infos sur un film spécifique."""
 
-    
     try:
         # Lancement des appels vers les 3 endpoints de TMDB
         details = tmdb_get_movies(f"/movie/{movie_id}", params={"language": "fr-FR"})
@@ -296,7 +266,8 @@ def get_movie_detail(movie_id: int):
         print(f"Crash Serveur: {e}")
         raise HTTPException(status_code=500, detail=f"Film non trouvé : {str(e)}")
     
-# Rout pour creer un nouvel utilisateur
+    
+# Route n°4 : pour creer un nouvel utilisateur
 @app.post("/auth/register")
 def register(user: schemas.UserRegister, db: Session = Depends(get_db)):
     existing_user = repository.get_user_by_email(db, user.email)
@@ -309,12 +280,11 @@ def register(user: schemas.UserRegister, db: Session = Depends(get_db)):
 
     return {"message": "Utilisateur créé avec succès"}
 
-# Route d'authentification utilisateur
+
+# Route n°5 : d'authentification utilisateur
 @app.post("/auth/login",response_model=schemas.TokenResponse)
-def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
-    db: Session = Depends(get_db)
-):  #Recureperation de l'utilisateur par emaail
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)): 
+    #Recureperation de l'utilisateur par email
     db_user = repository.get_user_by_email(db, form_data.username)
      # Verification si l'utilisateur existe
     if not db_user:
@@ -330,34 +300,30 @@ def login(
         "token_type": "bearer"
     }
 
-# Route pour ajouter un film aux favoris
+# Route n°6 : pour ajouter un film aux favoris
 @app.post("/favorites")
-def add_favorite(
-    favorite: schemas.FavoriteCreate,
-    db: Session = Depends(get_db)
-):
-    return repository.add_favorite(db, favorite, 10)
+def add_favorite(favorite: schemas.FavoriteCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    return repository.add_favorite(db, favorite, user_id= current_user.id)
 
-#  Route pour recuperer tous les favoris
+
+# Route n°7: pour recuperer tous les favoris de l'utilisateur
 @app.get("/favorites")
-def get_favorites(
-    db: Session = Depends(get_db)
-):
-    return repository.get_all_favorites(db)
+def get_favorites(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    return repository.get_user_favorites(db, user_id = current_user.id)
 
-#Route pour supprimer un favori
+
+# Route n°8 : pour supprimer un favori
 @app.delete("/favorites/{favorite_id}")
-def delete_favorite(
-    favorite_id: int,
-    db: Session = Depends(get_db)
-):
-    deleted = repository.delete_favorite(db, favorite_id, 10)
+def delete_favorite(favorite_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    deleted = repository.delete_favorite(db, favorite_id, user_id = current_user.id)
 
     if not deleted:
         raise HTTPException(status_code=404, detail="Favori introuvable")
 
     return {"message": "Favori supprimé"}
 
+
+# Route n°9 :
 @app.get("/secure-test")
 def secure_test(token: str = Depends(oauth2_scheme)):
     return {"msg": "secure"}
