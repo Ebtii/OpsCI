@@ -32,7 +32,7 @@ function NavBar({search, setSearch, vueFavoris, setVueFavoris, favoris, onLogoCl
             <div className="contenu-nav"> 
                 {/* Zone logo */}
                 <div className="conteneur-logo" onClick={onLogoClick}>
-                    <img className="img-logo" src="public/images/logoCrop.png" alt="logo WatchNext" />
+                    <img className="img-logo" src="images/logoCrop.png" alt="logo WatchNext" />
                     <span className="nom-site">WatchNext</span>
                 </div>
 

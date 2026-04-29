@@ -14,7 +14,7 @@ function MovieCard({movie, onClickFavoris, estFavoris, onSelectMovie}) {
   const titre = movie.title || movie.movie_title || "Titre inconnu";
 
   // s'il n'y a pas d'image associé au film : attribution par défaut
-  const imgSrc = movie.poster_path || "/images/film_indispo.png";
+  const imgSrc = movie.poster_path || "images/film_indispo.png";
 
     return (
       // carte entièrement cliquable 

@@ -77,18 +77,11 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     return user
 
 # ------------ Gestion CORS -------------
-# Liste des origines autorisées à appeler le backend
-origines = [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "http://127.0.0.1:5173",
-    "http://127.0.0.1:5174",
-]
 
 # Configuration CORS pour permettre au frontend d'acceder au backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origines,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],    # GET, POST...
     allow_headers=["*"],
