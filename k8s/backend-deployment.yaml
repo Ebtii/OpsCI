@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 2 # Scaling : K8s 2 instances de l'API seront lancées
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: opsci-backend:latest # image récupérée
+        imagePullPolicy: Never 
+        ports:
+        - containerPort: 8000
+        env:
+        - name: TMDB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: api-secrets
+              key: TMDB_TOKEN
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: api-secrets
+              key: DATABASE_URL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP
