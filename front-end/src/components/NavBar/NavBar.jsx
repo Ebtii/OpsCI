@@ -3,9 +3,25 @@ import SearchBar from "../SearchBar/SearchBar" ;
 import SearchSuggestions from "../SearchSuggestions/SearchSuggestions";
 import "./NavBar.css";
 
+
+/**
+ * Barre de navigation persistante assure : la recherche globale, les onglets et l'authentification
+ * 
+ * @param {string} search - état de la recherche partagé avec App.jsx
+ * @param {Function} setSearch : pour modifier 'search'
+ * @param {boolean} vueFavoris : booléen disant si l'utilisateur consulte sa page de fav
+ * @param {Function} setVueFavoris : pour passer de l'affichage vers la vue des favoris
+ * @param {Array} favoris : sert pour calculer et afficher le compteur des favoris
+ * @param {Function} onLogoClick : pour revenir à l'accueil lorqu'on appuie sur le logo
+ * @param {Array} STmovies : liste de tous les films (pour les suggestions)
+ * @param {Function} onSelectMovie : pour ouvrir la fiche d'un film depuis les suggestions
+ * @param {boolean} estLogin : état de connexion (pour savoir si on affiche "Profil" ou "Connexion")
+ * @param {Function} onOpenAuth : pour ouvrir les services d'authentification
+ * @param {Function} onLogout : pour supprimer le token et réinitialiser la session
+ */
 function NavBar({search, setSearch, vueFavoris, setVueFavoris, favoris, onLogoClick, STmovies, onSelectMovie, estLogin, onOpenAuth, onLogout}) {
     
-    const liste = Array.isArray(STmovies) ? STmovies : [] ; // si STmovies pas encore chargé => tableau vide
+    const liste = Array.isArray(STmovies) ? STmovies : [] ; // si STmovies pas encore chargé sous forme de tableau => tableau vide
     const [showMenuProfil, setShowMenuProfil] = useState(false) ; 
 
     const suggestions = search.length > 0 ? 

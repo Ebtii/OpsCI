@@ -1,5 +1,12 @@
 import "./GenreFilter.css";
 
+/**
+ * Affiche une liste de boutons pour pouvoir filtrer les films par genre
+ * 
+ * @param {string} genreActuel : genre actuellement sélectionné
+ * @param {Function} setGenreActuel : pour modifier le genre sélectionné
+ * @param {Array} genres : tableau contenant tous les genres disponibles chez TMDB
+ */
 function GenreFilter({genreActuel, setGenreActuel, genres}) {
 
     return (

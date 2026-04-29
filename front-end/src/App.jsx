@@ -14,26 +14,37 @@ import FormAuthInscr from "./components/FormAuthInscr/FormAuthInscr";
 function App() {
 
   // ---------- STATES ----------
-  const [STmovies, setMovies] = useState([]); // Tableau de films
-  const [populaires, setPopulaires] = useState([]);
-  const [search, setSearch] = useState(""); // Props de recherche pour la liaison SearchBar - App
-  const [favoris, setFavoris] = useState([]);
-  const [vueFavoris, setVueFavoris] = useState(false); // si false : on voit tout | si true : on voit que les favoris[]
-  const [selectMovie, setSelectMovie] = useState(null);
-  const [movieBan, setMovieBan] = useState(null) ; // Film sélectionné pour la bannière
+
+  // Film 
+  const [STmovies, setMovies] = useState([]); // Liste dynamique des films (populaires ou recherche)
+  const [populaires, setPopulaires] = useState([]); // Cache pour les films populaires (utilisé pour la bannière)
+  const [favoris, setFavoris] = useState([]); // Liste des favoris de l'utilisateur connecté
+
+  // Filtrage 
   const [genreActuel, setGenreActuel] = useState("Tous") ; // Genre sélectionné actuellement
   const [filtres, setFiltres] = useState({genre: "Tous", anneeMin: 1900, noteMin: 0, tri: "recent"}) ; // Identification des critères de filtrage
-  // Relatifs à l''état de l'authentification
-  const [showAuth, setShowAuth] = useState(false); 
-  const [estLogin, setEstLogin] = useState(!!localStorage.getItem("token")) ;
+  
+  // Navigation
+  const [search, setSearch] = useState(""); // mot de recherche entré par l'utilisateur
+  const [vueFavoris, setVueFavoris] = useState(false); // si false : on voit tout | si true : on voit que les favoris[]
+  const [selectMovie, setSelectMovie] = useState(null); // Stocke le film associé
+  const [movieBan, setMovieBan] = useState(null) ; // Film sélectionné alétoirement pour la bannière
+
+  // Authentification
+  const [showAuth, setShowAuth] = useState(false);  // Gestion de la connexion et l'inscription
+  const [estLogin, setEstLogin] = useState(!!localStorage.getItem("token")) ; // token
 
 
   // ---------- Variables ----------
   const genres = ["Tous", "Action", "Aventure", "Animation", "Comédie", "Crime", "Documentaire",
     "Drame", "Fantastique", "Horreur", "Mystère", "Romance", "Science-Fiction", "Thriller"] ;
+
+  // Vérification de si le film sélectionné actuellement est déjà dans les favoris
   const estFav = selectMovie && favoris.some(f => Number(f.movie_id) === Number(selectMovie.id));
 
-  // ----------- Chargement des données ---------- 
+  // ----------- Chargement des données ----------
+
+  // Récupération des films populaires
   useEffect(() => {
     console.log("Début du fetch :");
     fetch(`${import.meta.env.VITE_API_URL}/movies`) 
@@ -47,7 +58,7 @@ function App() {
   }, []);
   
 
-// Mise à jour du film selectionné avec les données complètes
+// Récupération des données complètes complètes du film sélectionné
   const selectionnerMovie = (movie) => {
     // Réinitialisation de l'état pour obliger le composant à se réactualiser
     setSelectMovie(null);
@@ -77,6 +88,8 @@ function App() {
   };
 
  //  ---------- Chargement des favoris -----------
+
+ // Rechargement des favoris dès une connexion/déconnexion
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -84,13 +97,14 @@ function App() {
     }
   }, [estLogin]);
 
+  // Chargement des données grâce au référence dans la base de données
   const chargerFavoris = (token) => {
     fetch(`${import.meta.env.VITE_API_URL}/favorites`, {
       headers: { Authorization: `Bearer ${token}`}
     })
       .then(res => {
         if (res.status === 401) {
-          // Si le token a expiré alors on se déconnecte
+          // Si le token a expiré alors on se déconnecte automatiquement
           handleLogout();
           throw new Error("La session a expirée");
         }
@@ -113,7 +127,7 @@ function App() {
     const titre = movie.movie_title || movie.title || ""; // Si film favori alors le titre est dans movie_title sinon movie.title
     const movieParSearch = titre.toLowerCase().includes(search.toLowerCase());
 
-    if (vueFavoris) return movieParSearch ;
+    if (vueFavoris) return movieParSearch ; // filtrage textuel (recherche seulement) s'applique (à améliorer !)
 
     const movieParGenre = genreActuel === "Tous" || (Array.isArray(movie.genre) && movie.genre.includes(genreActuel));
     const movieParAnnee = movie.year >= filtres.anneeMin;
@@ -231,15 +245,16 @@ function App() {
   }
 
 //  ---------- Gestion de la recherche ----------  
+
+  // Recherche dans la base de donnée globale de l'API TMDB
   useEffect(() => {  // Si la barre de recherche est vide = films populaires par défaut
     if (search.trim() === "") {
       fetch(`${import.meta.env.VITE_API_URL}/movies`)      
         .then(res => res.json())      
-        .then(data => setMovies(data));    
+        .then(data => setMovies(populaires));    
       return;  
     }  
     
-    // Si l'utilisateur entre quelque chose on interroge la totalité de la base TMDB 
     const timer = setTimeout(() => {    
       fetch(`${import.meta.env.VITE_API_URL}/movies/search?query=${search}`)      
         .then(res => res.json())      
@@ -248,10 +263,12 @@ function App() {
         })      
         .catch(error => console.error("Erreur recherche globale:", error));  
     }, 500); // attente 300ms après la saisie  
-    return () => clearTimeout(timer);
+    return () => clearTimeout(timer); // si l'utilisateur entre une autre lettre on réinitialise le timer
   }, [search]);
 
   console.log("Nombre de films à afficher :", moviesFiltree.length);
+
+  // Innteface utilisateur
 
   return (
     <div className="page-principale">
@@ -275,13 +292,13 @@ function App() {
           </div>
 
           {/* Bannière principale */}
-          {/* Affichage de la bannière seulement si on n'est pas dans les favoris et qu'aucun est sélectionné */}
+          {/* Affichage de la bannière seulement si on n'est pas dans les favoris et qu'aucun film est sélectionné */}
           {!vueFavoris && !selectMovie && <Banner movie={movieBan} onSelectMovie={selectionnerMovie}/> }
 
           {/* Filtres avancés */}
           <FiltreAvR filtres={filtres} setFiltres={setFiltres} />
 
-          {/* Affichage : Catalogue || Liste */}
+          {/* Affichage conditionnel: Catalogue (par genre) || Liste */}
           {genreActuel === "Tous" && !vueFavoris ? (
             <Catalogue movies={moviesFiltree} genres={genres} onUpdateFavoris={updateFavoris} favoris={favoris} setGenreActuel={setGenreActuel} onSelectMovie={selectionnerMovie} />
           ) : (

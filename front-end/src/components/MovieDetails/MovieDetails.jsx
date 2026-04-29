@@ -1,12 +1,20 @@
 import "./MovieDetails.css";
 
+/**
+ * Affiche un fiche contenant toutes les informations concernant le film
+ * 
+ * @param {Object} movie : contient tous les détails du film
+ * @param {Function} onRetourAccueil : pour revenir au catalogue
+ * @param {Function} onUpdateFavoris : pour modifier la liste des favoris
+ * @param {Boolean} estFav : état indiquant si le film est dans les favoris
+ */
 function MovieDetails({ movie, onRetourAccueil, onUpdateFavoris, estFav }) {
     if (!movie) return null ;
 
-    // Fonction pour ouvrir Youtube
+    // Fonction pour ouvrir Youtube pour lancer la bande-annonce
     const regarderTrailer = () => {
         if (movie.trailer_url) {
-            window.open(movie.trailer_url, "_blank");
+            window.open(movie.trailer_url, "_blank"); // permet d'ouvrir youtube tout en gardant la page ouverte
         } else {
             alert("Bande-annonce non disponible pour ce film.");
         }

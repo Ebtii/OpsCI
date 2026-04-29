@@ -1,6 +1,17 @@
 import MovieList from "../MovieList/MovieList";
 import "./Catalogue.css";
 
+
+/**
+ * Range les films en lignes par genre
+ * 
+ * @param {Array} movies : liste des films
+ * @param {Array} genres : liste des genres 
+ * @param {Function} onUpdateFavoris : gère l'ajout/suppression des favoris
+ * @param {Array} favoris : liste des favoris de l'utilisateur
+ * @param {Function} setGenreActuel : sert à voir tous les films pour "voir tout" un genre
+ * @param {Function} onSelectMovie : montre les détails d'un film
+ */
 function Catalogue({movies = [], genres = [], onUpdateFavoris, favoris, setGenreActuel, onSelectMovie}) {
 
     if (!genres || genres.length === 0) {

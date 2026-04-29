@@ -2,12 +2,13 @@ import "./FormAuthInscr.css";
 import { useState } from "react";
 
 function FormAuthInscr({onLoginSucces, onClose}) {
-    const [estLogin, setEstLogin] = useState(true);
+    const [estLogin, setEstLogin] = useState(true); // permet le switch entre la connexion et l'inscription
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [username, setUsername] = useState("");
     const [messErreur, setMessErreur] = useState("");
     
+    // Soumission du formulaire de connexion/inscription
     const soumission = async (e) => {
         e.preventDefault();
         setMessErreur("");
@@ -28,6 +29,7 @@ function FormAuthInscr({onLoginSucces, onClose}) {
                 const data = await res.json();
 
                 if (res.ok) {
+                    // Stockage du token JWT pour garder l'utilisateur connecté
                     localStorage.setItem("token", data.access_token) ;
                     localStorage.setItem("email", email) ;
                     onLoginSucces();
@@ -35,7 +37,7 @@ function FormAuthInscr({onLoginSucces, onClose}) {
                     throw new Error(data.detail || "Identifiants incorrects");
                 }
             } else {
-                // Inscription on récupère un JSON pour schemas.UserRegister
+                // Inscription on récupère un JSON pour schemas.UserRegister (backend)
                 const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, { 
                     method: "POST",
                     headers: {"Content-Type": "application/json"}, 
@@ -46,7 +48,7 @@ function FormAuthInscr({onLoginSucces, onClose}) {
 
                 if (res.ok) {
                     alert("Compte créé ! Bienvenue, vous pouvez maintenant vous connecter.") ;
-                    setEstLogin(true)
+                    setEstLogin(true)   // passe automatiquement sur l'écran de connexion pour faciliter
                 } else {
                     throw new Error(data.detail || "Erreur lors de l'inscription");
                 }
@@ -84,6 +86,7 @@ function FormAuthInscr({onLoginSucces, onClose}) {
                     </button>
                 </form>
 
+                {/* Connexion ||| Inscription */}
                 <p className="choix-auth">
                     {estLogin ? "Nouveau sur WatchNext ?" : "Déjà membre ?"}
                     <span onClick={() => setEstLogin(!estLogin)}>

@@ -1,6 +1,12 @@
 import {useState} from "react" ;
 import "./SearchBar.css";
 
+/**
+ * Sert d'interface de saisie pour l'utilisateur
+ * 
+ * @param {string} search : valeur de la recherche (stockée dans le state de App.jsx)
+ * @param {Function} onSearchChange : pour notifier le parent des changement de texte lors de la saisie (callback)
+ */
 // Composant barre de recherche
 function SearchBar({search, onSearchChange}) {
     return (

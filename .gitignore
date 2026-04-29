@@ -1,9 +1,23 @@
-# Python
+# Python (Backend)
 __pycache__/
 *.pyc
+.pytest_cache/
+**/.venv/
+**/env/
 
-# Env
-.env
+# Node (Frontend)
+/node_modules/
+**/dist/
+*.local
 
-# Node
-node_modules/
+# Docker
+.DS_Store
+*.log
+
+# Environnement
+**/.env
+.env*
+
+# IDE
+.vscode/
+.idea/
