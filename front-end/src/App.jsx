@@ -50,9 +50,11 @@ function App() {
     fetch(`${import.meta.env.VITE_API_URL}/movies`) 
       .then(reponse => reponse.json())  // Transforme la réponse en JSON
       .then(data => {
+        const unique = data.filter((movie, index, self) => 
+          index === self.findIndex(f => f.id === movie.id))
         console.log("Films récupérés :", data); // Affiche les films récupérés dans le terminal
-        setMovies(data); // Met les films dans le state STmovies
-        setPopulaires(data); 
+        setMovies(unique); // Met les films dans le state STmovies
+        setPopulaires(unique); 
       })
       .catch(error => console.error("Erreur fetch :", error));
   }, []);
@@ -249,10 +251,10 @@ function App() {
   // Recherche dans la base de donnée globale de l'API TMDB
   useEffect(() => {  // Si la barre de recherche est vide = films populaires par défaut
     if (search.trim() === "") {
-      fetch(`${import.meta.env.VITE_API_URL}/movies`)      
-        .then(res => res.json())      
-        .then(data => setMovies(populaires));    
-      return;  
+      if (populaires.length > 0) {
+        setMovies(populaires) ;
+      }
+      return;
     }  
     
     const timer = setTimeout(() => {    
@@ -268,7 +270,7 @@ function App() {
 
   console.log("Nombre de films à afficher :", moviesFiltree.length);
 
-  // Innteface utilisateur
+  // Interface utilisateur
 
   return (
     <div className="page-principale">

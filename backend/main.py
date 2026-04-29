@@ -24,7 +24,7 @@ import repository
 
 # Création de l'objet application
 app = FastAPI(title="WatchNext API") # contient toutes les routes + gères les requêtes
-#Charger les variables d'environnement(.env)
+# # Chargement des variables d'environnement depuis le fichier .env
 load_dotenv()
 
 # Création des tables dans la base de données
@@ -93,12 +93,6 @@ app.add_middleware(
     allow_methods=["*"],    # GET, POST...
     allow_headers=["*"],
 )
-
-# Recuperation du chemain du dossier backend
-DIR_BACKEND = Path(__file__).parent
-
-# Chargement des variables d'environnement depuis le fichier .env
-load_dotenv(dotenv_path=DIR_BACKEND / ".env")
 
 # Chargement du token TMDB depuis les variable d'environnement
 TMDB_TOKEN = os.getenv("TMDB_TOKEN", "").strip()
