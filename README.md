@@ -141,6 +141,7 @@ URL :http://localhost:5173
 ---
 
 ## Structure
+```
 src/
 ├── App.jsx (logique principale)
 ├── main.jsx (point d’entrée)
@@ -154,7 +155,7 @@ src/
 │   ├── SearchBar/
 │   ├── Catalogue/
 │   └── FormAuthInscr/
-
+```
 ### Fonctionnement interne
 
 #### Gestion des états
