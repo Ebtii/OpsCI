@@ -140,22 +140,20 @@ URL :http://localhost:5173
 
 ---
 
-### Structure
-
-src/  ├── App.jsx (logique principale)  
-      ├── main.jsx (point d’entrée)  
-      ├── components/ 
-      │  ├── NavBar/  
-      │  ├── MovieCard/ 
-      │  ├── MovieList/  
-      │  ├── MovieDetails/ 
-      │  ├── GenreFilter/ 
-      │  ├── FiltreAvR/ 
-      │  ├── SearchBar/
-      │  ├── Catalogue/ 
-      │  └── FormAuthInscr/
-
----
+## Structure
+src/
+├── App.jsx (logique principale)
+├── main.jsx (point d’entrée)
+├── components/
+│   ├── NavBar/
+│   ├── MovieCard/
+│   ├── MovieList/
+│   ├── MovieDetails/
+│   ├── GenreFilter/
+│   ├── FiltreAvR/
+│   ├── SearchBar/
+│   ├── Catalogue/
+│   └── FormAuthInscr/
 
 ### Fonctionnement interne
 
