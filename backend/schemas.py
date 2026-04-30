@@ -6,7 +6,7 @@ from typing import Optional
 class UserRegister(BaseModel):
     email: EmailStr
     password: str
-
+    username: str
 
 # Données reçues lors de la connexion
 class UserLogin(BaseModel):
@@ -22,7 +22,7 @@ class TokenResponse(BaseModel):
 
 # Données nécessaires pour ajouter un film aux favoris
 class FavoriteCreate(BaseModel):
-    tmdb_id: int
-    title: str
+    movie_id: int
+    movie_title: str
     poster_path: Optional[str] = None
    

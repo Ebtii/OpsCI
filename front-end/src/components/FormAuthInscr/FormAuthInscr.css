@@ -1,0 +1,135 @@
+/* Le conteneur qui prend tout l'écran (fond flouté) */
+.zone-auth {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* La carte du formulaire */
+.entree-auth {
+    background: #121212;
+    padding: 2.5rem;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid rgba(255, 204, 0, 0.3); 
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 204, 0, 0.05);
+    position: relative;
+    color: white;
+}
+
+/* Bouton fermer */
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-btn:hover {
+    color: var(--primary-color);
+}
+
+.entree-auth h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    color: #ffd60a;
+    font-weight: 700;
+}
+
+/* Zones de saisie */
+.input-zone {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-zone label {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #bbb;
+}
+
+.input-zone input {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    padding: 0.8rem;
+    border-radius: 10px;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.input-zone input:focus {
+    border-color: var(--primary-color);
+    background: #222;
+    box-shadow: 0 0 8px rgba(168, 85, 247, 0.3);
+}
+
+/* Bouton de soumission */
+.soumission-auth {
+    width: 100%;
+    padding: 0.9rem;
+    margin-top: 1rem;
+    background: #ffd60a;
+    border: none;
+    border-radius: 10px;
+    color: black;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, filter 0.3s;
+}
+
+.soumission-auth:hover {
+    filter: brightness(1.2);
+    transform: translateY(-2px);
+}
+
+.soumission-auth:active {
+    transform: translateY(0);
+}
+
+/* Texte pour switcher Login/Register */
+.choix-auth {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.choix-auth span {
+    color: var(--primary-color);
+    font-weight: 700;
+    cursor: pointer;
+    margin-left: 0.5rem;
+}
+
+.choix-auth span:hover {
+    text-decoration: underline;
+}
+
+.mess-erreur {
+    background-color: #fee2e2;
+    color: #dc2626;           
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #f87171;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    text-align: center;
+}

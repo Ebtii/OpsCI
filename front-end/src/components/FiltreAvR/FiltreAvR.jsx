@@ -1,6 +1,11 @@
 import "./FiltreAvR.css";
 
-// Composant pour les filtres avancés (tri, note, année)
+/**
+ * Permet à l'utilisateur de faire des recherches avancées sur la liste des films affichés
+ * 
+ * @param {Object} filtres : état actuel des filtres (venant de App.jsx)
+ * @param {Function} setFiltres : pour mettre à jour les filtres.
+ */
 function FiltreAvR({filtres, setFiltres}) {
 
     return (

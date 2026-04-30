@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # Base de données (PostgreSQL)
+  db:
+    image: postgres:16-alpine
+    container_name: watchnext_db
+    restart: always
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PWD}
+      POSTGRES_DB: watchnext_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d watchnext_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432" 
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # pour garder les films même si on arrête Docker
+
+  # BackeEnd (FastAPI)
+  backend:
+    env_file: .env
+    build: ./backend # pour chercher le Dockerfile dans le dossier backend
+    container_name: watchnext_api
+    restart: always
+    depends_on:
+      db: # attend que la bdd soit prête avant de démarrer le backend
+        condition: service_healthy # attend que le healthcheck soit validé
+    environment:
+      DATABASE_URL: postgresql://${DB_USER}:${DB_PWD}@db:5432/watchnext_db
+      TMDB_TOKEN: ${TMDB_TOKEN}
+      SECRET_KEY: ${SECRET_KEY}
+    ports:
+      - "8000:8000"
+
+  # FrontEnd (React + Nginx)
+  frontend:
+    env_file: .env
+    build: 
+      context: ./front-end # pour chercher le Dockerfile dans le dossier front-end
+      args:
+        - VITE_API_URL=${VITE_API_URL} # transmission de l'URL du .env au Dockerfile
+    container_name: watchnext_web
+    restart: always
+    depends_on:
+      - backend # attend que le backend soit prêt avant de démarrer le frontend
+    ports:
+      - "80:80"
+
+volumes:
+  postgres_data:

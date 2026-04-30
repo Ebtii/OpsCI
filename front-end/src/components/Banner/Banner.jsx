@@ -1,5 +1,12 @@
 import "./Banner.css";
 
+
+/**
+ * Affiche une bannière en haut de la page d'accueil avec un film
+ * 
+ * @param {Object} movie : film sélectionné aléatoirement
+ * @param {Function} onSelectMovie : fonction pour ouvrir la vue détaillée du film
+ */
 function Banner({movie, onSelectMovie}) {
     if (!movie) return null ;
 

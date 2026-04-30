@@ -5,9 +5,12 @@ import schemas
 
 # Créer un nouvel utilisateur dans la base de données
 def create_user(db: Session, user: schemas.UserRegister, hashed_password: str):
+    pseudo_auto = user.email.split('@')[0]
+    
     db_user = models.User(
         email=user.email,
-        password_hash=hashed_password
+        password_hash=hashed_password,
+        username=pseudo_auto
     )
     db.add(db_user)
     db.commit()
@@ -23,8 +26,8 @@ def get_user_by_email(db: Session, email: str):
 # Ajouter un film aux favoris d'un utilisateur
 def add_favorite(db: Session, favorite: schemas.FavoriteCreate, user_id: int):
     db_favorite = models.Favorite(
-        tmdb_id=favorite.tmdb_id,
-        title=favorite.title,
+        movie_id=favorite.movie_id,
+        movie_title=favorite.movie_title,
         poster_path=favorite.poster_path,
         user_id=user_id
     )
@@ -37,11 +40,6 @@ def add_favorite(db: Session, favorite: schemas.FavoriteCreate, user_id: int):
 # Récupérer les favoris d'un utilisateur
 def get_user_favorites(db: Session, user_id: int):
     return db.query(models.Favorite).filter(models.Favorite.user_id == user_id).all()
-
-# Récupérer tous les favoris
-def get_all_favorites(db: Session):
-    return db.query(models.Favorite).all()
-
 
 # Supprimer un favori d'un utilisateur
 def delete_favorite(db: Session, favorite_id: int, user_id: int):

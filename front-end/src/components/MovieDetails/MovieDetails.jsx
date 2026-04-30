@@ -1,12 +1,20 @@
 import "./MovieDetails.css";
 
+/**
+ * Affiche un fiche contenant toutes les informations concernant le film
+ * 
+ * @param {Object} movie : contient tous les détails du film
+ * @param {Function} onRetourAccueil : pour revenir au catalogue
+ * @param {Function} onUpdateFavoris : pour modifier la liste des favoris
+ * @param {Boolean} estFav : état indiquant si le film est dans les favoris
+ */
 function MovieDetails({ movie, onRetourAccueil, onUpdateFavoris, estFav }) {
     if (!movie) return null ;
 
-    // Fonction pour ouvrir Youtube
+    // Fonction pour ouvrir Youtube pour lancer la bande-annonce
     const regarderTrailer = () => {
         if (movie.trailer_url) {
-            window.open(movie.trailer_url, "_blank");
+            window.open(movie.trailer_url, "_blank"); // permet d'ouvrir youtube tout en gardant la page ouverte
         } else {
             alert("Bande-annonce non disponible pour ce film.");
         }
@@ -34,10 +42,10 @@ function MovieDetails({ movie, onRetourAccueil, onUpdateFavoris, estFav }) {
 
                 <div className="infos-movie">
                     <span className="date-movie"> <b>Sortie :</b> {movie.date}</span>
-                    {movie.duree && <span> <b>Durée :</b> {movie.duree} min</span>}
+                    <span><b>Durée :</b> {movie.duree && movie.duree > 0 ? `${movie.duree} min` : "Non renseignée"}</span>
                     <span className="movie-origin"><b>Nationalité :</b> {movie.pays_og}</span>
                     <span className="genre-movie"> <b>Genre :</b> {movie.genre?.join(", ")}</span> 
-                    <span className="note-movie"> <b>Note :</b> {movie.note}/10 ⭐ </span> 
+                    <span className="note-movie"> <b>Note :</b> {movie.note && movie.note > 0 ? `${movie.note}/10 ⭐` : "-"}</span> 
                     {/* Acteurs */}
                     {movie.acteurs && movie.acteurs.length > 0 && (
                         <div className="acteurs">
@@ -56,7 +64,7 @@ function MovieDetails({ movie, onRetourAccueil, onUpdateFavoris, estFav }) {
 
                 <div className="synopsis">  
                     <h3>Synopsis</h3>
-                    <p className="description-movie">{movie.description}</p>
+                    <p className="description-movie">{movie.description || "Aucun synopsis disponible pour ce film."}</p>
                 </div>
             </div>
         </div>
