@@ -42,7 +42,7 @@ function MovieDetails({ movie, onRetourAccueil, onUpdateFavoris, estFav }) {
 
                 <div className="infos-movie">
                     <span className="date-movie"> <b>Sortie :</b> {movie.date}</span>
-                    <span><b>Durée :</b> {movie.duree && movie.duree > 0 ? `${movie.duree} min` : "Non renseignée"}</span>
+                    <span><b>Durée :</b> {movie.duree && movie.duree > 0 ? `${movie.duree} min` : "-"}</span>
                     <span className="movie-origin"><b>Nationalité :</b> {movie.pays_og}</span>
                     <span className="genre-movie"> <b>Genre :</b> {movie.genre?.join(", ")}</span> 
                     <span className="note-movie"> <b>Note :</b> {movie.note && movie.note > 0 ? `${movie.note}/10 ⭐` : "-"}</span> 

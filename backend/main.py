@@ -156,15 +156,15 @@ def normalize_tmdb_movie(m: dict, details: dict = None, credits: dict = None, vi
                 trailer_key = v["key"]
                 break
 
-    pays = "N/A"
+    pays = "-"
     if details and details.get("production_countries"):
         pays = details.get("production_countries")[0].get("name", "N/A")
    
-    dist = ["N/A"]
+    dist = ["-"]
     if details and details.get("production_companies"):
         dist = [comp.get("name") for comp in details.get("production_companies")[:3]]
 
-    liste_acteurs = ["N/A"]
+    liste_acteurs = ["-"]
     if credits and credits.get("cast"):
         liste_acteurs = [actor.get("name") for actor in credits.get("cast")[:5]]
     
@@ -172,10 +172,10 @@ def normalize_tmdb_movie(m: dict, details: dict = None, credits: dict = None, vi
         "id": m.get("id"),
         "title": m.get("title"),
         "description": m.get("overview"),
-        "poster_path": f"https://image.tmdb.org/t/p/w500{m['poster_path']}" if m.get("poster_path") else "/images/tbc.png",
-        "backdrop_path": f"https://image.tmdb.org/t/p/w500{m['backdrop_path']}" if m.get("backdrop_path") else "/images/tbc.png",
+        "poster_path": f"https://image.tmdb.org/t/p/w500{m['poster_path']}" if m.get("poster_path") else "/images/film_indispo.png",
+        "backdrop_path": f"https://image.tmdb.org/t/p/w500{m['backdrop_path']}" if m.get("backdrop_path") else "/images/film_indispo.png",
         "duree": details.get("runtime") if details and details.get("runtime") else None,   # durée en minutes
-        "date": m.get("release_date", "N/A"),
+        "date": m.get("release_date", "-"),
         "genre": nom_genres,
         "note": m.get("vote_average", 0),
         "langue_og": m.get("original_language", "fr"),
@@ -312,3 +312,13 @@ def delete_favorite(favorite_id: int, db: Session = Depends(get_db), current_use
 @app.get("/secure-test")
 def secure_test(token: str = Depends(oauth2_scheme)):
     return {"msg": "secure"}
+
+# Route n°10 : pour récupérer les infos de l'utilisateur connecté
+@app.get("/auth/me")
+def get_me(current_user: models.User = Depends(get_current_user)):
+    return {
+        "id": current_user.id,
+        "username": current_user.username,
+        "email": current_user.email,
+        "created_at": current_user.created_at,
+    }

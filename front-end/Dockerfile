@@ -24,6 +24,7 @@ FROM nginx:stable-alpine
 
 # Copie du code et utilisation de Nginx après séparation en HTML/CSS/JS
 COPY --from=build_proc /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Nommage des ports : écoute sur le port 80 (Web)
 EXPOSE 80

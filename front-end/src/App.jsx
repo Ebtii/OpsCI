@@ -9,6 +9,7 @@ import Banner from "./components/Banner/Banner";
 import MovieDetails from "./components/MovieDetails/MovieDetails";
 import FiltreAvR from "./components/FiltreAvR/FiltreAvR";
 import FormAuthInscr from "./components/FormAuthInscr/FormAuthInscr";
+import Profil from "./components/Profil/Profil";
 
 // Composant principal : celui qui sera affiché dans le navigateur
 function App() {
@@ -33,6 +34,7 @@ function App() {
   // Authentification
   const [showAuth, setShowAuth] = useState(false);  // Gestion de la connexion et l'inscription
   const [estLogin, setEstLogin] = useState(!!localStorage.getItem("token")) ; // token
+  const [showProfil, setShowProfil] = useState(false);
 
 
   // ---------- Variables ----------
@@ -167,6 +169,7 @@ function App() {
     setSearch("") ;
     setGenreActuel("Tous") ;
     setFiltres({genre: "Tous", anneeMin: 1900, noteMin: 0, tri: "recent"}); // Réinitialisation des filtres
+    setShowProfil(false);
   } ;
 
   // Fermeture du film ouvert lors du clic pour voir la liste des Favoris
@@ -178,7 +181,8 @@ function App() {
     setSelectMovie(null) ;    // Fermeture du film ouvert pour accéder à toute la liste 
     setVueFavoris(true) ;
     setSearch("") ; // Vidage de la recherche pour voir tous les favoris directement
-  }
+    setShowProfil(false);
+  } ;
 
   // ---------- Gestion des favoris (ajout/suppression) ----------
   const updateFavoris = async (movie) => {
@@ -191,10 +195,12 @@ function App() {
 
     try {
       // Association des ID qu'il vient de TMDB ou notre BDD
-      const movieTmdbId = movie.id;
+      const movieTmdbId = movie.movie_id || movie.id;
+      console.log("movie reçu :", movie)
+      console.log("movieTmdbId :", movieTmdbId)
 
-      //const favorisDB = await resGet.json();
-      const favoriExiste = favoris.find(fav => fav.movie_id === movieTmdbId);
+      const favoriExiste = favoris.find(fav => Number(fav.movie_id) === Number(movieTmdbId));
+      console.log("favoriExiste :", favoriExiste) 
 
       if (favoriExiste) {
         // Suppression 
@@ -277,11 +283,14 @@ function App() {
       {/* Barre de navigation */}
       <NavBar search={search} setSearch={handleSearch} vueFavoris={vueFavoris} setVueFavoris={afficherFavoris} 
         favoris={favoris} onLogoClick={retourAccueil} STmovies={STmovies} onSelectMovie={selectionnerMovie} 
-        estLogin={estLogin} onOpenAuth={() => setShowAuth(true)} onLogout={handleLogout}/>
+        estLogin={estLogin} onOpenAuth={() => setShowAuth(true)} onLogout={handleLogout} onOpenProfil={() => setShowProfil(true)}/>
 
       {selectMovie ? (
         /* Vue détaillée du film */
         <MovieDetails movie={selectMovie} onRetourAccueil={() => setSelectMovie(null)} onUpdateFavoris={updateFavoris} estFav={estFav}/>
+      ) : showProfil ? (
+        /* Vue Profil */
+        <Profil onClose={() => setShowProfil(false)} favoris={favoris} onLogout={handleLogout} />
       ) : (
         /* Vue Liste/Catalogue des films */
         <>
@@ -313,6 +322,7 @@ function App() {
       {showAuth && (
         <FormAuthInscr onLoginSucces={handleLoginSucces} onClose={() => setShowAuth(false)} />
       )}
+      
     </div>
   );
 }

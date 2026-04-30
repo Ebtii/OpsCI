@@ -1,6 +1,7 @@
 import { useState } from "react";
 import SearchBar from "../SearchBar/SearchBar" ;
 import SearchSuggestions from "../SearchSuggestions/SearchSuggestions";
+import Profil from "../Profil/Profil";
 import "./NavBar.css";
 
 
@@ -19,10 +20,11 @@ import "./NavBar.css";
  * @param {Function} onOpenAuth : pour ouvrir les services d'authentification
  * @param {Function} onLogout : pour supprimer le token et réinitialiser la session
  */
-function NavBar({search, setSearch, vueFavoris, setVueFavoris, favoris, onLogoClick, STmovies, onSelectMovie, estLogin, onOpenAuth, onLogout}) {
+function NavBar({search, setSearch, vueFavoris, setVueFavoris, favoris, onLogoClick, STmovies, onSelectMovie, estLogin, onOpenAuth, onLogout, onOpenProfil}) {
     
     const liste = Array.isArray(STmovies) ? STmovies : [] ; // si STmovies pas encore chargé sous forme de tableau => tableau vide
-    const [showMenuProfil, setShowMenuProfil] = useState(false) ; 
+    const [showMenuProfil, setShowMenuProfil] = useState(false);
+    const [showProfil, setShowProfil] = useState(false);
 
     const suggestions = search.length > 0 ? 
         liste.filter(m => m.title?.toLowerCase().includes(search.toLowerCase())).slice(0, 5) : [] ;
@@ -66,6 +68,9 @@ function NavBar({search, setSearch, vueFavoris, setVueFavoris, favoris, onLogoCl
 
                                 {showMenuProfil && (
                                     <div className="menu-deroulant">
+                                        <button className="item-menu-profil" onClick={onOpenProfil}>
+                                            Mon Compte
+                                        </button>
                                         <button className="bouton-logout" onClick={onLogout}>Déconnexion</button>
                                     </div>
                                 )}

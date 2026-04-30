@@ -29,6 +29,11 @@ spec:
             secretKeyRef:
               name: api-secrets
               key: DATABASE_URL
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: api-secrets
+              key: SECRET_KEY
 ---
 apiVersion: v1
 kind: Service
