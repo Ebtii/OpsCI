@@ -309,8 +309,6 @@ def delete_favorite(favorite_id: int, db: Session = Depends(get_db), current_use
 
     return {"message": "Favori supprimé"}
 
-
-# Route n°9 :
 @app.get("/secure-test")
 def secure_test(token: str = Depends(oauth2_scheme)):
     return {"msg": "secure"}
